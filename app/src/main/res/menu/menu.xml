@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:enabled="false"
+            android:icon="@drawable/ic_action_line_mark"
+            android:title="----------------BARANG----------------"/>
+        <item
+            android:id="@+id/item_add"
+            android:icon="@drawable/ic_action_add"
+            android:title="tambah barang"/>
+        <item
+            android:id="@+id/item_list"
+            android:icon="@drawable/ic_action_list"
+            android:title="list barang"/>
+        <item
+            android:id="@+id/item_list_rated"
+            android:icon="@drawable/ic_action_list"
+            android:title="list barang dirating"/>
+    </group>
+
+    <group>
+        <item
+            android:enabled="false"
+            android:icon="@drawable/ic_action_line_mark"
+            android:title="------------------EVENT------------------"/>
+        <item
+            android:id="@+id/event_list"
+            android:icon="@drawable/ic_action_list"
+            android:title="list event"/>
+    </group>
+
+    <group>
+        <item
+            android:enabled="false"
+            android:icon="@drawable/ic_action_line_mark"
+            android:title="-----------------LOKASI-----------------"/>
+        <item
+            android:id="@+id/lokasi_list"
+            android:icon="@drawable/ic_action_list"
+            android:title="list lokasi"/>
+    </group>
+
+    <group
+        android:enabled="false">
+        <item
+            android:id="@+id/id1"
+            android:title=""/>
+        <item
+            android:id="@+id/id2"
+            android:title=""/>
+    </group>
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/img_profile"
+        android:title="LOGOUT"/>
+
+</menu>

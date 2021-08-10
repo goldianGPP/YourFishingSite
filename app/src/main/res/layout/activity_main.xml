@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/btnAddEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/img_logo"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/app_name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/imageView"
+                android:layout_centerVertical="true"/>
+
+            <ImageButton
+                android:id="@+id/btnSideMenu"
+                android:layout_width="22dp"
+                android:layout_height="18dp"
+                android:background="@drawable/button_blue"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_menu"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardElevation="2dp"
+            app:cardCornerRadius="10dp"
+            android:layout_below="@+id/btnAddEvent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:backgroundTint="@color/faded_black"
+                        android:id="@+id/imgProfile"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_centerInParent="true"
+                        android:layout_centerHorizontal="true"
+                        android:src="@color/grey" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/txtUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:textStyle="bold"
+                    android:textSize="15dp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/txtNama"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="@color/black"/>
+
+                <Button
+                    android:id="@+id/btnUpdateProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="edit profil"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_blue"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profileContainer"
+            android:fillViewport="true">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="2dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="80dp"
+                        android:paddingBottom="80dp"
+                        android:layout_centerInParent="true"
+                        android:useDefaultMargins="true"
+                        android:columnCount="1">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginEnd="50dp"
+                            app:cardCornerRadius="20dp"
+                            card_view:cardElevation="2dp"
+                            card_view:cardUseCompatPadding="true">
+                            <RelativeLayout
+                                android:id="@+id/btnCuaca"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/white"
+                                android:background="@drawable/button_blue"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    app:civ_circle_background_color="@color/purple_500"
+                                    android:src="@drawable/img_payung"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:text="ramalan cuaca"
+                                    android:textColor="@color/black"
+                                    android:textSize="10dp" />
+                            </RelativeLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginEnd="50dp"
+                            app:cardCornerRadius="20dp"
+                            card_view:cardElevation="2dp"
+                            card_view:cardUseCompatPadding="true">
+                            <RelativeLayout
+                                android:id="@+id/btnTempat"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/white"
+                                android:background="@drawable/button_blue"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    app:civ_circle_background_color="@color/orange"
+                                    android:src="@drawable/img_calendar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:text="kalender"
+                                    android:textColor="@color/black"
+                                    android:textSize="10dp" />
+                            </RelativeLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginEnd="50dp"
+                            app:cardCornerRadius="20dp"
+                            card_view:cardElevation="2dp"
+                            card_view:cardUseCompatPadding="true">
+                            <RelativeLayout
+                                android:id="@+id/btnItem"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/white"
+                                android:background="@drawable/button_blue"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    app:civ_circle_background_color="@color/red_pink"
+                                    android:src="@drawable/img_item"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:text="item"
+                                    android:textColor="@color/black"
+                                    android:textSize="10dp" />
+                            </RelativeLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginEnd="50dp"
+                            app:cardCornerRadius="20dp"
+                            card_view:cardElevation="2dp"
+                            card_view:cardUseCompatPadding="true">
+                            <RelativeLayout
+                                android:id="@+id/btnLokasi"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/white"
+                                android:background="@drawable/button_blue"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_centerInParent="true"
+                                    app:civ_circle_background_color="@color/dark_blue"
+                                    android:src="@drawable/img_lokasi_ikan"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:text="lokasi ikan"
+                                    android:textColor="@color/black"
+                                    android:textSize="10dp" />
+                            </RelativeLayout>
+                        </androidx.cardview.widget.CardView>
+
+                    </GridLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+        </ScrollView>
+
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/menuSNav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:menu="@menu/menu"
+        android:layout_gravity="end"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

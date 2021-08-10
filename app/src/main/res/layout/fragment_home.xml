@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@color/blue"/>
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:layout_marginStart="30dp"-->
+<!--            android:layout_marginEnd="30dp"-->
+<!--            app:cardCornerRadius="20dp"-->
+<!--            card_view:cardElevation="2dp"-->
+<!--            card_view:cardUseCompatPadding="true">-->
+<!--            <LinearLayout-->
+<!--                android:id="@+id/btnTanggal"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:backgroundTint="@color/white"-->
+<!--                android:background="@drawable/button_pressed_blue"-->
+<!--                android:orientation="vertical"-->
+<!--                android:gravity="center">-->
+<!--                <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="150dp"-->
+<!--                    app:civ_circle_background_color="@color/grey"-->
+<!--                    android:src="@drawable/img_payung"/>-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="ramalan cuaca"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="10dp" />-->
+<!--            </LinearLayout>-->
+<!--        </androidx.cardview.widget.CardView>-->
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:columnCount="2"
+            android:useDefaultMargins="true">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                app:cardCornerRadius="20dp"
+                card_view:cardElevation="2dp"
+                card_view:cardUseCompatPadding="true">
+                <RelativeLayout
+                    android:id="@+id/btnCuaca"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/button_blue"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        app:civ_circle_background_color="@color/purple_500"
+                        android:src="@drawable/img_payung"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="ramalan cuaca"
+                        android:textColor="@color/black"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                app:cardCornerRadius="20dp"
+                card_view:cardElevation="2dp"
+                card_view:cardUseCompatPadding="true">
+                <RelativeLayout
+                    android:id="@+id/btnTempat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/button_blue"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        app:civ_circle_background_color="@color/orange"
+                        android:src="@drawable/img_calendar"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="kalender"
+                        android:textColor="@color/black"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                app:cardCornerRadius="20dp"
+                card_view:cardElevation="2dp"
+                card_view:cardUseCompatPadding="true">
+                <RelativeLayout
+                    android:id="@+id/btnItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/button_blue"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        app:civ_circle_background_color="@color/red_pink"
+                        android:src="@drawable/img_item"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="item"
+                        android:textColor="@color/black"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                app:cardCornerRadius="20dp"
+                card_view:cardElevation="2dp"
+                card_view:cardUseCompatPadding="true">
+                <RelativeLayout
+                    android:id="@+id/btnLokasi"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/button_blue"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        app:civ_circle_background_color="@color/dark_blue"
+                        android:src="@drawable/img_lokasi_ikan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="lokasi ikan"
+                        android:textColor="@color/black"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+    </RelativeLayout>
+</ScrollView>
