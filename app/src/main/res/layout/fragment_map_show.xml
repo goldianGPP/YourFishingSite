@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
@@ -27,6 +27,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/containerImg"
         android:fillViewport="true">
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -85,19 +86,37 @@
                     android:textColor="@color/black"
                     android:hint="Deskripsi"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/black"
-                    android:textColor="@color/white"
-                    android:text="comments"/>
-                <FrameLayout
-                    android:id="@+id/fragment_container_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="30dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </ScrollView>
 
-</LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/btnCommentUp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/img_up"
+        android:background="@drawable/button_blue"/>
+
+    <LinearLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationY="2000dp"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/btnCommentDown"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:src="@drawable/img_down"
+            android:background="@drawable/button_blue" />
+        <RelativeLayout
+            android:id="@+id/fragment_container_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+    </LinearLayout>
+
+</RelativeLayout>

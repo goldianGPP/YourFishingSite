@@ -12,9 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Model.LokasiModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.CariBarangFragment;
+import com.goldian.yourfishsingsite.View.TampilEventActivity;
+import com.goldian.yourfishsingsite.View.TampilLokasiActivity;
 import com.goldian.yourfishsingsite.View.UbahLokasiActivity;
 import com.squareup.picasso.Picasso;
 
@@ -42,12 +46,16 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.LokasiHold
         holder.txtNama.setText(currentData.getNama());
         holder.txtIkan.setText(currentData.getIkan());
         holder.txtDeskripsi.setText(currentData.getDeskripsi());
-        String url = context.getResources().getString(R.string.img_url_lokasi) + currentData.getImg();
-        Picasso.get().load(url).into(holder.imgLokasi);
+        String url = currentData.getImg();
+
+        Glide.with(context)
+                .load(url)
+                .signature(new ObjectKey(currentData.getImg_key()))
+                .into(holder.imgLokasi);
 
         holder.btnCard.setOnClickListener(view -> {
             Intent intent = new Intent(context, UbahLokasiActivity.class);
-            context.startActivity(setExtras(intent,currentData,url));
+            ((TampilLokasiActivity)context).startActivityForResult(setExtras(intent,currentData,url),1);
         });
     }
 
@@ -57,6 +65,7 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.LokasiHold
         intent.putExtra("ikan", currentData.getIkan());
         intent.putExtra("deskripsi", currentData.getDeskripsi());
         intent.putExtra("img", url);
+        intent.putExtra("key", currentData.getImg_key());
 
         return intent;
     }

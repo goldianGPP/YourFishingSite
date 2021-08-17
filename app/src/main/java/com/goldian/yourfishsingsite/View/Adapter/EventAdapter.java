@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.Holder.EventHolder;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.DetailEventActivity;
+import com.goldian.yourfishsingsite.View.TampilEventActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,10 +42,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventHolder> {
     @Override
     public void onBindViewHolder(@NonNull EventHolder holder, int position) {
         final EventModel currentData = list.get(position);
-        String url = context.getResources().getString(R.string.img_url_event)+currentData.getImg();
-        Picasso.get().load(url).into(holder.imgEvent);
+        String url = currentData.getImg();
         holder.txtTitle.setText(currentData.getTitle());
         holder.txtDeskripsi.setText(currentData.getDeskripsi());
+
+        Glide.with(context)
+                .load(url)
+                .signature(new ObjectKey(currentData.getImg_key()))
+                .into(holder.imgEvent);
 
         holder.card.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailEventActivity.class);
@@ -52,7 +59,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventHolder> {
             intent.putExtra("deskripsi", currentData.getDeskripsi());
             intent.putExtra("link", currentData.getLink());
             intent.putExtra("img", url);
-            context.startActivity(intent);
+            intent.putExtra("day", currentData.getDay());
+            intent.putExtra("month", currentData.getMonth());
+            intent.putExtra("year", currentData.getYear());
+            intent.putExtra("key", currentData.getImg_key());
+            if (context instanceof  TampilEventActivity)
+                ((TampilEventActivity)context).startActivityForResult(intent,1);
+            else
+                context.startActivity(intent);
         });
     }
 

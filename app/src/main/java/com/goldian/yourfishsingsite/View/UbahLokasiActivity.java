@@ -17,11 +17,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.goldian.yourfishsingsite.Controller.ItemController;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.LokasiController;
+import com.goldian.yourfishsingsite.Model.DialogModel;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +37,7 @@ import okhttp3.RequestBody;
 
 public class UbahLokasiActivity extends AppCompatActivity {
 
-    ImageView imgMap;
+    ImageView imgLokasi;
     TextView txtLatitude, txtLongitude;
     EditText txtNama, txtDeskripsi, txtIkan;
     PreferencesModel pref;
@@ -43,6 +47,7 @@ public class UbahLokasiActivity extends AppCompatActivity {
     Bitmap bitmap;
     ProgressDialogModel dialogModel;
     LokasiController lokasiController;
+    FilterModel filterModel;
 
     boolean isUpdate;
     String id_lokasi ;
@@ -72,12 +77,15 @@ public class UbahLokasiActivity extends AppCompatActivity {
         }
     }
 
+    //initialize object and other
     private void init(){
         getSupportActionBar().setTitle("Ubah Lokasi");
+
         pref = new PreferencesModel(this,"login");
         builder = new AlertDialog.Builder(this);
         dialogModel = new ProgressDialogModel(this);
         lokasiController = new LokasiController(this);
+        filterModel = new FilterModel();
 
         btnImg = findViewById(R.id.btnImg);
         txtLatitude = findViewById(R.id.txtLatitude);
@@ -86,15 +94,16 @@ public class UbahLokasiActivity extends AppCompatActivity {
         txtIkan = findViewById(R.id.txtIkan);
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         btnMap = findViewById(R.id.btnMap);
-        imgMap = findViewById(R.id.imgMap);
+        imgLokasi = findViewById(R.id.imgMap);
         btnDelete = findViewById(R.id.btnDelete);
 
-        imgMap.setVisibility(View.VISIBLE);
+        imgLokasi.setVisibility(View.VISIBLE);
         btnImg.setText("ubah gambar");
         btnMap.setText("ubah");
         btnDelete.setVisibility(View.VISIBLE);
     }
 
+    //initialize value
     private void setValue(){
         Bundle bundle = getIntent().getExtras();
         txtLatitude.setText(bundle.getString("latitude"));
@@ -104,34 +113,28 @@ public class UbahLokasiActivity extends AppCompatActivity {
         txtNama.setText(bundle.getString("nama"));
         txtIkan.setText(bundle.getString("ikan"));
         txtDeskripsi.setText(bundle.getString("deskripsi"));
-        Picasso.get().load(bundle.getString("img")).into(imgMap);
+
+        Glide.with(this)
+                .load(bundle.getString("img"))
+                .signature(new ObjectKey(bundle.getString("key")))
+                .into(imgLokasi);
+        imgLokasi.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
+    //set listener
     private void setListener(){
         btnMap.setOnClickListener(onClick);
         btnImg.setOnClickListener(onClick);
+        imgLokasi.setOnClickListener(onClick);
     }
 
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
-    }
-
+    //set dialog for updating image
     public void dialog(){
-        builder.setMessage("Gambar Akan Diubah").setTitle("PERINGATAN");
-        builder.setPositiveButton("ok", (dialog, id) -> {
-            updateImg();
-            dialog.dismiss();
-        });
-        builder.setNegativeButton("batal", (dialog, id) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        new DialogModel(this, R.layout.view_dialog)
+                .defaultView();
     }
 
+    //update data image in server
     public void updateImg(){
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_lokasi = imageModel.requestBody(this.id_lokasi);
@@ -144,7 +147,8 @@ public class UbahLokasiActivity extends AppCompatActivity {
         );
     }
 
-    private void request(){
+    //update data in database
+    private void update(){
         dialogModel.show();
         isUpdate = true;
         lokasiController.updateLokasi(
@@ -155,13 +159,41 @@ public class UbahLokasiActivity extends AppCompatActivity {
         );
     }
 
+    //delete data in database
+    private void delete(){
+        dialogModel.show();
+        isUpdate = true;
+        lokasiController.deleteLokasi(
+                id_lokasi
+        );
+    }
+
+    //get result from database into the view
+    public void result(boolean bool){
+        dialogModel.dismiss();
+        if (bool){
+            if (isUpdate) {
+                setResult(RESULT_OK);
+                finish();
+            }
+            else
+                imgLokasi.setImageBitmap(bitmap);
+        }
+    }
+
+    private boolean validate(){
+        return new Validation()
+                .isFieldOk(txtNama,1,20)
+                .validate();
+    }
+
     //listener
     //---------------
     @SuppressLint("IntentReset")
     View.OnClickListener onClick = view -> {
         if (view == btnMap){
-            if (isFieldEmpty(txtNama) && isFieldEmpty(txtIkan) && isFieldEmpty(txtDeskripsi)) {
-                request();
+            if (validate()) {
+                update();
             }
             else
                 Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG).show();
@@ -170,6 +202,15 @@ public class UbahLokasiActivity extends AppCompatActivity {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, 1);
+        }
+        else if (view == btnDelete){
+            delete();
+        }
+        else if (view == imgLokasi){
+            if (imgLokasi.getScaleType() == ImageView.ScaleType.CENTER_CROP)
+                imgLokasi.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            else
+                imgLokasi.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
     };
 

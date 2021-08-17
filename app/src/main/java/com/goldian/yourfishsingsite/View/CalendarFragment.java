@@ -130,9 +130,6 @@ public class CalendarFragment extends Fragment {
     View.OnClickListener onClick = view -> {
         if (view == btnAddEvent){
             Intent intent = new Intent(getContext(), TambahEventActivity.class);
-            intent.putExtra("day",day.toString());
-            intent.putExtra("month",String.valueOf((month+1)));
-            intent.putExtra("year",year.toString());
             startActivityForResult(intent,1);
         }
     };

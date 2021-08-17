@@ -1,7 +1,11 @@
 package com.goldian.yourfishsingsite.Model;
 
+import android.content.res.Resources;
+
+import com.goldian.yourfishsingsite.R;
+
 public class LokasiModel {
-    String id_lokasi, id_pengguna, nama, deskripsi, ikan, img;
+    String id_lokasi, id_pengguna, nama, deskripsi, ikan, img, img_key;
     Float latitude, longitude;
 
     public String getId_lokasi() {
@@ -45,7 +49,7 @@ public class LokasiModel {
     }
 
     public String getImg() {
-        return img;
+        return new ImageModel().getBase_url() + "lokasi/" + img;
     }
 
     public void setImg(String img) {
@@ -66,5 +70,13 @@ public class LokasiModel {
 
     public void setLongitude(Float longitude) {
         this.longitude = longitude;
+    }
+
+    public String getImg_key() {
+        return img_key;
+    }
+
+    public void setImg_key(String img_key) {
+        this.img_key = img_key;
     }
 }

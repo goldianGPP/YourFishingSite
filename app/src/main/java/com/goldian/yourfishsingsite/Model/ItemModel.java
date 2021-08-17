@@ -1,7 +1,11 @@
 package com.goldian.yourfishsingsite.Model;
 
+import android.content.res.Resources;
+
+import com.goldian.yourfishsingsite.R;
+
 public class ItemModel {
-    String id_item, id_pengguna, nama, jenis, deskripsi, harga, img, web;
+    String id_item, id_pengguna, nama, jenis, deskripsi, harga, img, web, img_key;
     float rating;
     float rank;
 
@@ -54,7 +58,7 @@ public class ItemModel {
     }
 
     public String getImg() {
-        return img;
+        return new ImageModel().getBase_url() + "item/" + img;
     }
 
     public void setImg(String img) {
@@ -83,5 +87,13 @@ public class ItemModel {
 
     public void setRank(float rank) {
         this.rank = rank;
+    }
+
+    public String getImg_key() {
+        return img_key;
+    }
+
+    public void setImg_key(String img_key) {
+        this.img_key = img_key;
     }
 }

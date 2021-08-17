@@ -13,9 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.PenggunaModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText txtUsername, txtPassword;
     TextView txtRegister;
     Button btnLogin;
+
     PreferencesModel preferences;
     ProgressDialogModel dialog;
 
@@ -37,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     //inisialisasi variable
     private void init(){
         getSupportActionBar().hide();
+        dialog = new ProgressDialogModel(this);
+
         txtUsername = findViewById(R.id.txtUsername);
         txtPassword = findViewById(R.id.txtPassword);
         txtRegister = findViewById(R.id.txtRegister);
@@ -44,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         preferences = new PreferencesModel(this,getResources().getString(R.string.login));
         txtUsername.setText(preferences.read("username"));
         txtPassword.setText(preferences.read("password"));
-        dialog = new ProgressDialogModel(this);
     }
 
     private void setListener(){
@@ -77,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             preferences.write("id_pengguna", penggunaModel.getId_pengguna());
             preferences.write("nama", penggunaModel.getNama());
             preferences.write("email", penggunaModel.getEmail());
+            preferences.write("key", penggunaModel.getImg_key());
             setIntent(MainActivity.class);
             finish();
         }
@@ -88,14 +93,19 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this, intent));
     }
 
+    private boolean validate(){
+        return new Validation()
+                .isFieldOk(txtUsername,3, 10)
+                .isFieldOk(txtPassword,6,20)
+                .validate();
+    }
+
     //listener
     //---------------------------------
     View.OnClickListener onClick = view -> {
         if (view == btnLogin){
-            if (isFieldEmpty(txtUsername) && isFieldEmpty(txtPassword))
+            if (validate())
                 request();
-            else
-                Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG).show();;
         }
         else {
             setIntent(RegisterActivity.class);

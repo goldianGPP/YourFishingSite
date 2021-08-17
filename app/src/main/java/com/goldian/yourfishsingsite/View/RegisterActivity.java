@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
 
     ProgressDialogModel dialogModel;
+    FilterModel filterModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
     private void init(){
         getSupportActionBar().hide();
         dialogModel = new ProgressDialogModel(this);
+        filterModel = new FilterModel();
+
         txtNama = findViewById(R.id.txtNama);
         txtEmail = findViewById(R.id.txtEmail);
         txtUsername = findViewById(R.id.txtUsername);
@@ -81,14 +86,21 @@ public class RegisterActivity extends AppCompatActivity {
         dialogModel.dismiss();
     }
 
+    private boolean validate(){
+        return new Validation()
+                .isFieldOk(txtNama,1, 20)
+                .isEmpty(txtEmail)
+                .isFieldOk(txtUsername,3, 10)
+                .isFieldOk(txtPassword,6,20)
+                .validate();
+    }
+
     //Listener
     //---------------
     View.OnClickListener onClick = view -> {
         if (view == btnRegister){
-            if (isFieldEmpty(txtNama) && isFieldEmpty(txtEmail) && isFieldEmpty(txtUsername) && isFieldEmpty(txtPassword))
+            if (validate())
                 request();
-            else
-                Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG).show();
         }
         if (view == txtLogin){
             setIntent(LoginActivity.class);

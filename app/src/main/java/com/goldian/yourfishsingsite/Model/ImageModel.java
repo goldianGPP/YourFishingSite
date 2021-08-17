@@ -18,8 +18,8 @@ import okhttp3.RequestBody;
 import static android.content.ContentValues.TAG;
 
 public class ImageModel {
-    String id_image, id_pengguna, img;
-    Context context;
+
+    private Context context;
 
     public ImageModel() {}
 
@@ -27,52 +27,32 @@ public class ImageModel {
         this.context = context;
     }
 
-    public String getId_image() {
-        return id_image;
-    }
+    public String getBase_url() {
+//        main localhost
+//        private final String base_url = "http://192.168.100.27:8082/CodeIgniter/fishingsite/images/";
 
-    public void setId_image(String id_image) {
-        this.id_image = id_image;
-    }
-
-    public String getId_pengguna() {
-        return id_pengguna;
-    }
-
-    public void setId_pengguna(String id_pengguna) {
-        this.id_pengguna = id_pengguna;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
+//        phone
+        return "http://192.168.43.146:8082/CodeIgniter/fishingsite/images/";
     }
 
     public RequestBody requestBody(String nama){
-        String descriptionString = nama;
-        RequestBody description = RequestBody.create( okhttp3.MultipartBody.FORM, descriptionString);
-        return description;
+        return RequestBody.create( MultipartBody.FORM, nama);
     }
 
     public MultipartBody.Part multipartBody(Uri uri, String nama){
         String fileLoc = getRealPathFromUri(context, uri);
         File file = new File(fileLoc);
         RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData(nama, file.getName(), requestFile);
 
-        return body;
+        return MultipartBody.Part.createFormData(nama, file.getName(), requestFile);
     }
 
     public MultipartBody.Part multipartBody(ContentResolver contentResolver, Bitmap bitmap, String nama){
         String fileLoc = getRealPathFromUri(contentResolver, getImageUri(context, bitmap));
         File file = new File(fileLoc);
         RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData(nama, file.getName(), requestFile);
 
-        return body;
+        return MultipartBody.Part.createFormData(nama, file.getName(), requestFile);
     }
 
     public Uri getImageUri(Context context, Bitmap bitmap) {
@@ -101,9 +81,14 @@ public class ImageModel {
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
+            int column_index = 0;
+            if (cursor != null) {
+                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            }
+            else
+                return null;
         } finally {
             if (cursor != null) {
                 cursor.close();

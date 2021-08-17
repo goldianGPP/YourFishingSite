@@ -19,9 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.goldian.yourfishsingsite.Controller.ItemController;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 
 import java.io.FileNotFoundException;
@@ -41,6 +43,7 @@ public class TambahBarangActivity extends AppCompatActivity {
     PreferencesModel pref;
     Uri uri;
     ProgressDialogModel dialogModel;
+    FilterModel filterModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +72,11 @@ public class TambahBarangActivity extends AppCompatActivity {
 
     private void init(){
         getSupportActionBar().setTitle("Tambah Barang");
+
         pref = new PreferencesModel(this, "login");
         dialogModel = new ProgressDialogModel(this);
+        filterModel = new FilterModel();
+
         imgItem = findViewById(R.id.imgItem);
         txtItemLink = findViewById(R.id.txtItemLink);
         txtItemName = findViewById(R.id.txtItemName);
@@ -123,12 +129,21 @@ public class TambahBarangActivity extends AppCompatActivity {
         dialogModel.dismiss();
     }
 
+    private boolean validate(){
+        return new Validation()
+                .isEmpty(txtItemLink)
+                .isFieldOk(txtItemName,1,20)
+                .isEmpty(txtItemHarga)
+                .isEmpty(txtItemTag)
+                .validate();
+    }
+
     //Listener
     //-------------
     @SuppressLint("IntentReset")
     View.OnClickListener onCLick = view -> {
         if (view == btnPost){
-            if (isFieldEmpty(txtItemLink) && isFieldEmpty(txtItemName) && isFieldEmpty(txtItemHarga) && isFieldEmpty(txtItemTag) && isFieldEmpty(txtItemDeskripsi)) {
+            if (validate()) {
                 if (uri != null)
                     request();
                 else

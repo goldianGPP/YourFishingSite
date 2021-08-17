@@ -12,11 +12,15 @@ import android.widget.Filterable;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.Holder.ItemHolder;
 import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.DetailBarangActivity;
+import com.goldian.yourfishsingsite.View.TampilBarangActivity;
+import com.goldian.yourfishsingsite.View.TampilEventActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -73,23 +77,30 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
     void init (ItemHolder holder, final ItemModel currentData){
         FilterModel filterModel = new FilterModel();
         String nama, harga;
+
         if (currentData.getNama().length() > 20)
             nama = currentData.getNama().toLowerCase().substring(0,17) + "...";
         else
             nama = currentData.getNama().toLowerCase();
-        harga = filterModel.setToRupiah(currentData.getHarga());
-        holder.txtNama.setText(nama);
+
         if (type.equals("horizontal")){
             holder.strRate.setRating(currentData.getRating());
-
         }
         else {
             holder.txtDeskripsi.setText(currentData.getDeskripsi());
         }
+
+        harga = filterModel.setToRupiah(currentData.getHarga());
+        holder.txtNama.setText(nama);
+
         holder.txtHarga.setText(harga);
         holder.txtJenis.setText(currentData.getJenis());
         holder.btnCard.setOnClickListener(onClick(currentData, holder));
-        Picasso.get().load(currentData.getImg()).into(holder.imgItem);
+
+        Glide.with(context)
+                .load(currentData.getImg())
+                .signature(new ObjectKey(currentData.getImg_key()))
+                .into(holder.imgItem);
     }
 
     private Intent setExtras(Intent intent,final ItemModel currentData){
@@ -102,6 +113,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
         intent.putExtra("jenis",currentData.getJenis());
         intent.putExtra("deskripsi",currentData.getDeskripsi());
         intent.putExtra("url",currentData.getWeb());
+        intent.putExtra("key",currentData.getImg_key());
 
         return intent;
     }
@@ -112,7 +124,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
         return view -> {
             Intent intent = new Intent(context, DetailBarangActivity.class);
             intent = setExtras(intent, currentData);
-            context.startActivity(intent);
+            if (context instanceof  TampilBarangActivity)
+                ((TampilBarangActivity)context).startActivityForResult(intent,1);
+            else
+                context.startActivity(intent);
         };
     }
 

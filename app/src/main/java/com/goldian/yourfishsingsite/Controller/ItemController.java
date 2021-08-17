@@ -51,8 +51,13 @@ public class ItemController {
         else if (context instanceof UbahBarangActivity){
             ((UbahBarangActivity)context).result(bool);
         }
+        else if (context instanceof DetailBarangActivity){
+            ((DetailBarangActivity)context).result(bool);
+        }
     }
 
+    //Result
+    //-------------------------------------------------------------------------------
     public void result(List<ItemModel> itemModelList){
         if (context instanceof FragmentActivity){
             if (fragment instanceof CariBarangFragment)
@@ -64,8 +69,10 @@ public class ItemController {
             ((TampilBarangActivity)context).result(itemModelList);
     }
 
-    //responses
-    //--------------------
+
+    //Get
+    //-------------------------------------------------------------------------------
+    //get recomendation itembased
     public void getRecomendation(String id_pengguna, String jenis, String id_item){
         api.getRecomendation(
                 id_pengguna,
@@ -96,6 +103,7 @@ public class ItemController {
         });
     }
 
+    //get recomendation userbased
     public void getRecomendation(String id_pengguna, String jenis){
         api.getRecomendation(
                 id_pengguna,
@@ -121,6 +129,7 @@ public class ItemController {
         });
     }
 
+    //get recomendation userbased by search
     public void getSearchRecomendation(String id_pengguna, String search){
         api.getSearchRecomendation(
                 id_pengguna,
@@ -146,81 +155,7 @@ public class ItemController {
         });
     }
 
-    public void postItem(RequestBody id_pengguna, RequestBody nama, RequestBody jenis, RequestBody deskripsi, RequestBody harga, RequestBody web, MultipartBody.Part file){
-        api.postItem(
-                id_pengguna,
-                nama,
-                jenis,
-                deskripsi,
-                harga,
-                web,
-                file
-        ).enqueue(new Callback<ItemModel>() {
-            @Override
-            public void onResponse(Call<ItemModel> call, Response<ItemModel> response) {
-                if (response.isSuccessful()) {
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ItemModel> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
-    }
-
-    public void updateItem(String id_item, String nama, String jenis, String deskripsi, String harga, String web){
-        api.updateItem(
-                id_item,
-                nama,
-                jenis,
-                deskripsi,
-                harga,
-                web
-        ).enqueue(new Callback<ItemModel>() {
-            @Override
-            public void onResponse(Call<ItemModel> call, Response<ItemModel> response) {
-                if (response.isSuccessful()) {
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ItemModel> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
-    }
-
-    public void updateItem(RequestBody id_item, MultipartBody.Part file){
-        api.updateItem(
-                id_item,
-                file
-        ).enqueue(new Callback<ItemModel>() {
-            @Override
-            public void onResponse(Call<ItemModel> call, Response<ItemModel> response) {
-                if (response.isSuccessful()) {
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ItemModel> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
-    }
-
+    //get item
     public void getItems(String id_pengguna) {
         api.getItems(
                 id_pengguna
@@ -245,6 +180,7 @@ public class ItemController {
         });
     }
 
+    //get rated item
     public void getRatedItems(String id_pengguna) {
         api.getRatedItems(
                 id_pengguna
@@ -263,6 +199,149 @@ public class ItemController {
             @Override
             public void onFailure(Call<List<ItemModel>> call, Throwable t) {
                 result( null);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
+            }
+        });
+    }
+
+    //Post
+    //-------------------------------------------------------------------------------
+    //post item
+    public void postItem(RequestBody id_pengguna, RequestBody nama, RequestBody jenis, RequestBody deskripsi, RequestBody harga, RequestBody web, MultipartBody.Part file){
+        api.postItem(
+                id_pengguna,
+                nama,
+                jenis,
+                deskripsi,
+                harga,
+                web,
+                file
+        ).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()){
+                    result(response.body());
+                }
+                else {
+                    result(false);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                result(false);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
+            }
+        });
+    }
+
+    public void setRating(String id_item, String id_pengguna, String rating){
+        api.setRating(
+                id_item,
+                id_pengguna,
+                rating
+        ).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()){
+                    result(response.body());
+                    Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    result(false);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                result(false);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
+            }
+        });
+    }
+
+    //Update
+    //-------------------------------------------------------------------------------
+    //update item
+    public void updateItem(String id_item, String nama, String jenis, String deskripsi, String harga, String web){
+        api.updateItem(
+                id_item,
+                nama,
+                jenis,
+                deskripsi,
+                harga,
+                web
+        ).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    result(response.body());
+                }
+                else {
+                    result(false);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                result(false);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
+            }
+        });
+    }
+
+    //update image item
+    public void updateItem(RequestBody id_item, MultipartBody.Part file){
+        api.updateItem(
+                id_item,
+                file
+        ).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    result(response.body());
+                }
+                else {
+                    result(false);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                result(false);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
+            }
+        });
+    }
+
+    //Delete
+    //-------------------------------------------------------------------------------
+    //delete item
+    public void deleteItem(String id_item){
+        api.deleteItem(id_item).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    result(response.body());
+                }
+                else {
+                    result( false);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                result( false);
                 Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                 call.cancel();
             }

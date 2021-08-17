@@ -1,6 +1,6 @@
 package com.goldian.yourfishsingsite.Model;
 
-public class WeatherModel {
+public class CuacaModel {
     String temp, temp_min, temp_max, humidity, main, description, dt_txt;
 
     public String getTemp() {

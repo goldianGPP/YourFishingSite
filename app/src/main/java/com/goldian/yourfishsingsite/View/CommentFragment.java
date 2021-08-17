@@ -1,5 +1,6 @@
 package com.goldian.yourfishsingsite.View;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.CommentController;
 import com.goldian.yourfishsingsite.Model.CommentModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -35,6 +39,8 @@ public class CommentFragment extends Fragment {
     List<CommentModel> commentModelList;
     RecyclerView recyclerView;
     PreferencesModel pref;
+    Context context;
+    SwipeRefreshLayout swipeRefresh;
 
     @Nullable
     @Override
@@ -52,6 +58,7 @@ public class CommentFragment extends Fragment {
         txtComment = v.findViewById(R.id.txtComment);
         btnSend = v.findViewById(R.id.btnSend);
         recyclerView = v.findViewById(R.id.recyclerView);
+        swipeRefresh = v.findViewById(R.id.swipeRefresh);
 
         pref = new PreferencesModel(getActivity(),"login");
         commentController = new CommentController(getContext(),this);
@@ -64,15 +71,27 @@ public class CommentFragment extends Fragment {
 
     private void setValue(){
         String url = getContext().getResources().getString(R.string.img_url_user)+pref.read("id_pengguna")+".jpg";
-        Picasso.get().load(url).into(imgProfile);
+        Glide.with(getContext())
+                .load(url)
+                .signature(new ObjectKey(pref.read("key")))
+                .into(imgProfile);
+
+        if (getArguments().getString("id").contains("lokasi")) {
+            context = getParentFragment().getParentFragment().getContext();
+            recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        }
+        else
+            context = getContext();
     }
 
     private void setListener(){
         btnSend.setOnClickListener(onClick);
+        swipeRefresh.setOnRefreshListener(this::request);
     }
 
     //request post comment
     private void request(String id_pengguna, String id, String comment){
+        swipeRefresh.setRefreshing(true);
         commentController.postComment(
                 id_pengguna,
                 id,
@@ -82,25 +101,29 @@ public class CommentFragment extends Fragment {
 
     //request get comments
     public void request(){
+        swipeRefresh.setRefreshing(true);
         commentController.getComments(getArguments().getString("id"));
     }
 
     //result post comment
     public void result(CommentModel commentModel){
-        txtComment.setText("");
-        commentModelList.add(commentModel);
-        commentAdapter = new CommentAdapter(getContext(), commentModelList, pref.read("username"));
-        recyclerView.setAdapter(commentAdapter);
+        if (commentModel != null) {
+            txtComment.setText("");
+            commentModelList.add(commentModel);
+            commentAdapter = new CommentAdapter(getContext(), commentModelList, pref.read("username"));
+            recyclerView.setAdapter(commentAdapter);
+        }
+        swipeRefresh.setRefreshing(false);
     }
 
     //result get comments
     public void result(List<CommentModel> commentModels){
-        this.commentModelList = commentModels;
-        if (getArguments().getString("id").contains("lokasi"))
-            commentAdapter = new CommentAdapter(getParentFragment().getParentFragment().getContext(), commentModels, pref.read("username"));
-        else
-            commentAdapter = new CommentAdapter(getContext(), commentModels, pref.read("username"));
-        recyclerView.setAdapter(commentAdapter);
+        if (commentModels != null) {
+            this.commentModelList = commentModels;
+            commentAdapter = new CommentAdapter(context, commentModels, pref.read("username"));
+            recyclerView.setAdapter(commentAdapter);
+        }
+        swipeRefresh.setRefreshing(false);
     }
 
     //Listener

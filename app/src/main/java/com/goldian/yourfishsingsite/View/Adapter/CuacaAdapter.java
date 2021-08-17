@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.goldian.yourfishsingsite.Model.WeatherModel;
+import com.goldian.yourfishsingsite.Model.CuacaModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.FragmentActivity;
 import com.goldian.yourfishsingsite.View.CuacaFragment;
@@ -22,14 +22,14 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder>{
+public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolder>{
     final Context context;
-    List<WeatherModel> list;
+    List<CuacaModel> list;
     CuacaFragment fragment;
     Calendar calendar;
     int hari_ini, besok, lusa;
 
-    public WeatherAdapter(Context context, List<WeatherModel> list, CuacaFragment fragment) {
+    public CuacaAdapter(Context context, List<CuacaModel> list, CuacaFragment fragment) {
         this.list = list;
         this.context = context;
         this.fragment = fragment;
@@ -44,14 +44,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
     @NonNull
     @Override
-    public WeatherAdapter.WeatherHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public CuacaAdapter.WeatherHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_weather_horizontal,viewGroup,false);
-        return new WeatherAdapter.WeatherHolder(view);
+        return new CuacaAdapter.WeatherHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherAdapter.WeatherHolder holder, int position) {
-        final WeatherModel currentData = list.get(position);
+    public void onBindViewHolder(@NonNull CuacaAdapter.WeatherHolder holder, int position) {
+        final CuacaModel currentData = list.get(position);
         String temp = currentData.getDt_txt().substring(8,10), time = currentData.getDt_txt().substring(11);
 
         Log.i(TAG, "onBindViewHolder: " + hari_ini + " --- " + temp);
@@ -90,7 +90,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         else return R.drawable.img_sunny;
     }
 
-    private void setView(WeatherModel currentData){
+    private void setView(CuacaModel currentData){
         int time = Integer.parseInt(currentData.getDt_txt().substring(11,13));
         int template, lighter, weather;
         template = setTemplate(time);

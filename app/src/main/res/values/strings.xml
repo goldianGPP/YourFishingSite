@@ -3,8 +3,7 @@
     <string name="access_token">pk.eyJ1IjoiZ29sZGlhbmRldiIsImEiOiJja2VlNHc1aGEwNjllMnhtemxscDRxZXc5In0.K6Vf_NxYWtBe5UPXO_mL0g</string>
     <string name="wather_token">&amp;appid=1daea3a07a43113b8e7ece1ba3093de1</string>
     <string name="img_url_user">http://192.168.100.27:8082/CodeIgniter/fishingsite/images/user/</string>
-    <string name="img_url_event">http://192.168.100.27:8082/CodeIgniter/fishingsite/images/event/</string>
-    <string name="img_url_lokasi">http://192.168.100.27:8082/CodeIgniter/fishingsite/images/lokasi/</string>
+<!--    <string name="base_url">http://192.168.100.27:8082/CodeIgniter/fishingsite/</string>-->
 
 <!--    preferences-->
     <string name="login">login</string>

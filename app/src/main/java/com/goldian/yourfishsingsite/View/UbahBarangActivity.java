@@ -16,10 +16,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.ItemController;
+import com.goldian.yourfishsingsite.Model.DialogModel;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +46,7 @@ public class UbahBarangActivity extends AppCompatActivity {
     PreferencesModel pref;
     ProgressDialogModel dialogModel;
     AlertDialog.Builder builder;
+    FilterModel filterModel;
     boolean isUpdate;
 
     @Override
@@ -68,13 +74,16 @@ public class UbahBarangActivity extends AppCompatActivity {
         }
     }
 
+    //initialize object and other
     @SuppressLint("SetTextI18n")
     private void init(){
         getSupportActionBar().setTitle("Ubah Barang");
+
         pref = new PreferencesModel(this, "login");
         builder = new AlertDialog.Builder(this);
         dialogModel = new ProgressDialogModel(this);
         itemController = new ItemController(this);
+        filterModel = new FilterModel();
 
         imgItem = findViewById(R.id.imgItem);
         txtItemLink = findViewById(R.id.txtItemLink);
@@ -92,6 +101,7 @@ public class UbahBarangActivity extends AppCompatActivity {
         btnDelete.setVisibility(View.VISIBLE);
     }
 
+    //initialize value
     private void setValue(){
         Bundle bundle = getIntent().getExtras();
         txtItemLink.setText(bundle.getString("url"));
@@ -100,35 +110,30 @@ public class UbahBarangActivity extends AppCompatActivity {
         txtItemTag.setText(bundle.getString("jenis"));
         txtItemDeskripsi.setText(bundle.getString("deskripsi"));
         id_item = bundle.getString("id_item");
-        Picasso.get().load(bundle.getString("img")).into(imgItem);
+
+
+        Glide.with(this)
+                .load(bundle.getString("img"))
+                .signature(new ObjectKey(bundle.getString("key")))
+                .into(imgItem);
+        imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
+    //set listener
     private void setListener(){
         btnPost.setOnClickListener(onCLick);
         btnGallery.setOnClickListener(onCLick);
         btnDelete.setOnClickListener(onCLick);
+        imgItem.setOnClickListener(onCLick);
     }
 
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
-    }
-
+    //set dialog for updating image
     public void dialog(){
-        builder.setMessage("Gambar Akan Diubah").setTitle("PERINGATAN");
-        builder.setPositiveButton("ok", (dialog, id) -> {
-            updateImg();
-            dialog.dismiss();
-        });
-        builder.setNegativeButton("batal", (dialog, id) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        new DialogModel(this, R.layout.view_dialog)
+                .defaultView();
     }
 
+    //update data image in server
     public void updateImg(){
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_item = imageModel.requestBody(this.id_item);
@@ -141,7 +146,8 @@ public class UbahBarangActivity extends AppCompatActivity {
         );
     }
 
-    private void request(){
+    //update data in database
+    private void update(){
         dialogModel.show();
         isUpdate = true;
         itemController.updateItem(
@@ -154,14 +160,33 @@ public class UbahBarangActivity extends AppCompatActivity {
         );
     }
 
+    //delete data in database
+    private void delete(){
+        dialogModel.show();
+        isUpdate = true;
+        itemController.deleteItem(id_item);
+    }
+
+    //get result from database into the view
     public void result(boolean bool){
+        dialogModel.dismiss();
         if (bool){
-            if (isUpdate)
+            if (isUpdate) {
+                setResult(RESULT_OK);
                 finish();
+            }
             else
                 imgItem.setImageBitmap(bitmap);
         }
-        dialogModel.dismiss();
+    }
+
+    private boolean validate(){
+        return new Validation()
+                .isEmpty(txtItemLink)
+                .isFieldOk(txtItemName,1,20)
+                .isEmpty(txtItemHarga)
+                .isEmpty(txtItemTag)
+                .validate();
     }
 
     //Listener
@@ -169,8 +194,9 @@ public class UbahBarangActivity extends AppCompatActivity {
     @SuppressLint("IntentReset")
     View.OnClickListener onCLick = view -> {
         if (view == btnPost){
-            if (isFieldEmpty(txtItemLink) && isFieldEmpty(txtItemName) && isFieldEmpty(txtItemHarga) && isFieldEmpty(txtItemTag) && isFieldEmpty(txtItemDeskripsi))
-                request();
+            if (validate()) {
+                update();
+            }
             else
                 Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG).show();;
         }
@@ -178,6 +204,15 @@ public class UbahBarangActivity extends AppCompatActivity {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, 1);
+        }
+        else if (view == btnDelete){
+            delete();
+        }
+        else if (view == imgItem){
+            if (imgItem.getScaleType() == ImageView.ScaleType.CENTER_CROP)
+                imgItem.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            else
+                imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
     };
 }

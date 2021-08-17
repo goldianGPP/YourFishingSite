@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.CommentController;
 import com.goldian.yourfishsingsite.Interface.CommentInterface;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -69,14 +71,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentHolder> implemen
         if (currentData.getUsername() != null) {
             holder.username.setText(currentData.getUsername());
             url = context.getResources().getString(R.string.img_url_user) + currentData.getId_pengguna() + ".jpg";
-            Picasso.get().load(url).into(holder.imgProfile);
         }
         else {
             currentData.setUsername(pref.read("username"));
             holder.username.setText(currentData.getUsername());
             url = context.getResources().getString(R.string.img_url_user) + pref.read("id_pengguna") + ".jpg";
-            Picasso.get().load(url).into(holder.imgProfile);
         }
+        Glide.with(context)
+                .load(url)
+                .signature(new ObjectKey(pref.read("key")))
+                .into(holder.imgProfile);
 
 
     }

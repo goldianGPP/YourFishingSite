@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,20 +19,25 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.ItemController;
+import com.goldian.yourfishsingsite.Model.DialogModel;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
+import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.Adapter.ItemAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Objects;
 
+import static android.content.ContentValues.TAG;
+
 public class DetailBarangActivity extends AppCompatActivity {
 
-    LinearLayout container;
+    LinearLayout frame_container;
     ImageView imgItem;
     RatingBar ratingItem;
     Button btnLink, btnUpdate;
@@ -39,23 +45,41 @@ public class DetailBarangActivity extends AppCompatActivity {
     ImageButton btnCommentDown, btnCommentUp;
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
+    Bundle bundle;
+    LinearLayout btnRating;
+    ItemController itemController;
+    ProgressDialogModel dialogModel;
 
     PreferencesModel pref;
-    String harga,  url, id_item, jenis, id_pengguna, img;
-    boolean isShown = false;
+    String harga, url, id_item, jenis, id_pengguna, img, deskripsi, key;
+    boolean isShown, flag;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_barang);
         init();
+        setValues();
         setListener();
+        request();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
     private void init() {
         getSupportActionBar().setTitle("Detail Barang");
         pref = new PreferencesModel(this,getResources().getString(R.string.login));
-        container = findViewById(R.id.frame_container);
+        itemController = new ItemController(this);
+        dialogModel = new ProgressDialogModel(this);
+
+        frame_container = findViewById(R.id.frame_container);
         imgItem = findViewById(R.id.imgItem);
         ratingItem = findViewById(R.id.ratingItem);
         btnLink = findViewById(R.id.btnLink);
@@ -66,14 +90,11 @@ public class DetailBarangActivity extends AppCompatActivity {
         btnCommentUp = findViewById(R.id.btnCommentUp);
         btnCommentDown = findViewById(R.id.btnCommentDown);
         txtJenis = findViewById(R.id.txtJenis);
+        btnRating = findViewById(R.id.btnRating);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        setValues();
-        setFragment();
-        request();
     }
 
     @Override
@@ -86,7 +107,7 @@ public class DetailBarangActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setValues(){
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         if (bundle != null) {
             jenis = bundle.getString("jenis");
             url = bundle.getString("url");
@@ -94,13 +115,22 @@ public class DetailBarangActivity extends AppCompatActivity {
             id_pengguna = bundle.getString("id_pengguna");
             harga = bundle.getString("harga");
             img = bundle.getString("img");
+            deskripsi = bundle.getString("deskripsi");
+            key = bundle.getString("key");
 
             txtItemName.setText(bundle.getString("nama"));
             txtItemHarga.setText(new FilterModel().setToRupiah(harga));
             ratingItem.setRating(bundle.getFloat("rating",0f));
             txtJenis.setText("tag : " + jenis);
-            txtDescription.setText("deskripsi : \n\n" + bundle.getString("deskripsi"));
-            Picasso.get().load(img).into(imgItem);
+            txtDescription.setText("deskripsi : \n\n" + deskripsi);
+
+            Log.i(TAG, "setValues: " + jenis.replace(", ", "-").replace(",","-"));
+
+            Glide.with(this)
+                    .load(bundle.getString("img"))
+                    .signature(new ObjectKey(key))
+                    .into(imgItem);
+            imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             if (Objects.equals(bundle.getString("id_pengguna"), pref.read("id_pengguna")))
                 btnUpdate.setVisibility(View.VISIBLE);
@@ -109,12 +139,15 @@ public class DetailBarangActivity extends AppCompatActivity {
             finish();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setListener(){
         btnLink.setOnClickListener(onClick);
         btnUpdate.setOnClickListener(onClick);
         btnCommentUp.setOnClickListener(onClick);
         btnCommentDown.setOnClickListener(onClick);
         imgItem.setOnClickListener(onClick);
+        if (!Objects.equals(bundle.getString("id_pengguna"), pref.read("id_pengguna")))
+            btnRating.setOnClickListener(onClick);
     }
 
     private void openWeb(){
@@ -135,11 +168,11 @@ public class DetailBarangActivity extends AppCompatActivity {
 
     private boolean setContainer(boolean visibility){
         if (visibility) {
-            container.animate().translationY(0);
+            frame_container.animate().translationY(0);
             return true;
         }
         else {
-            container.animate().translationY(2000);
+            frame_container.animate().translationY(2000);
             return false;
         }
     }
@@ -149,21 +182,36 @@ public class DetailBarangActivity extends AppCompatActivity {
         intent.putExtra("id_pengguna",id_pengguna);
         intent.putExtra("img",img);
         intent.putExtra("nama",txtItemName.getText().toString());
-        intent.putExtra("harga",txtItemHarga.getText().toString());
+        intent.putExtra("harga",harga);
         intent.putExtra("jenis",jenis);
-        intent.putExtra("deskripsi",txtDescription.getText().toString());
+        intent.putExtra("deskripsi",deskripsi);
         intent.putExtra("url",url);
+        intent.putExtra("key",key);
 
         return intent;
     }
 
+    public void setRating(String rating){
+        dialogModel.show();
+        itemController
+                .setRating(
+                        id_item,
+                        pref.read("id_pengguna"),
+                        rating
+                );
+    }
+
     private void request(){
-        new ItemController(this)
+        itemController
                 .getRecomendation(
                         pref.read("id_pengguna"),
-                        jenis,
+                        jenis.replace(", ", "-").replace(",","-"),
                         id_item
                 );
+    }
+
+    public void result(Boolean bool){
+            dialogModel.dismiss();
     }
 
     public void result(List<ItemModel> itemModelList){
@@ -180,9 +228,14 @@ public class DetailBarangActivity extends AppCompatActivity {
             openWeb();
         else if (view == btnUpdate){
             Intent intent = new Intent(this, UbahBarangActivity.class);
-            startActivity(setExtras(intent));
+            startActivityForResult(setExtras(intent),1);
         }
         else if (view == btnCommentUp || view == btnCommentDown){
+            if (!flag) {
+                flag = true;
+                setFragment();
+            }
+
             if (isShown)
                 isShown = setContainer(false);
             else
@@ -193,6 +246,10 @@ public class DetailBarangActivity extends AppCompatActivity {
                 imgItem.setScaleType(ImageView.ScaleType.FIT_CENTER);
             else
                 imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+        else if (view == btnRating){
+            new DialogModel(this, R.layout.view_dialog_rating)
+                    .ratingView();
         }
     };
 }

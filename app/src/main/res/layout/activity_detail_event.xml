@@ -8,11 +8,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnUpdate"
+        android:layout_above="@+id/btnCommentUp"
         android:fillViewport="true">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout"
@@ -23,7 +24,7 @@
                     android:id="@+id/imgEvent"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/img_logo_main"
                     app:layout_constraintDimensionRatio="5:4"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +52,16 @@
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="25sp"/>
+                    <TextView
+                        android:id="@+id/txtDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"/>
                     <TextView
                         android:id="@+id/txtDeskripsi"
                         android:layout_width="match_parent"
@@ -90,18 +101,45 @@
                             android:textColor="@color/black"
                             android:textSize="20sp"/>
                     </LinearLayout>
+                    <Button
+                        android:id="@+id/btnUpdate"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/button_grey"
+                        android:textColor="@color/black"
+                        android:text="ubah"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/btnUpdate"
-        android:visibility="gone"
+
+    <ImageButton
+        android:id="@+id/btnCommentUp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/button_blue"
-        android:textColor="@color/white"
-        android:text="ubah"/>
+        android:src="@drawable/img_up"
+        android:background="@drawable/button_blue"/>
+
+    <LinearLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationY="2000dp"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/btnCommentDown"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:src="@drawable/img_down"
+            android:background="@drawable/button_blue" />
+        <RelativeLayout
+            android:id="@+id/fragment_container_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+    </LinearLayout>
 </RelativeLayout>

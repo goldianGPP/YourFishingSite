@@ -1,10 +1,13 @@
 package com.goldian.yourfishsingsite.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.goldian.yourfishsingsite.Controller.ItemController;
 import com.goldian.yourfishsingsite.Model.ItemModel;
@@ -20,8 +23,8 @@ public class TampilBarangActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
     PreferencesModel pref;
-    ProgressDialogModel dialogModel;
     ItemController itemController;
+    SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +34,30 @@ public class TampilBarangActivity extends AppCompatActivity {
         request();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            request();
+        }
+    }
+
     private void init(){
         getSupportActionBar().setTitle("Tampil Barang");
         pref = new PreferencesModel(this,"login");
         itemController = new ItemController(this);
-        dialogModel = new ProgressDialogModel(this);
+
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(this::request);
     }
 
     private void request(){
-        dialogModel.show();
+        swipeRefresh.setRefreshing(true);
         if (getIntent().getExtras().getBoolean("flag")){
             itemController
                 .getItems(
@@ -63,7 +77,7 @@ public class TampilBarangActivity extends AppCompatActivity {
             itemAdapter = new ItemAdapter(this, itemModels, itemModels.size(), "vertical");
             recyclerView.setAdapter(itemAdapter);
         }
-        dialogModel.dismiss();
+        swipeRefresh.setRefreshing(false);
     }
 
 

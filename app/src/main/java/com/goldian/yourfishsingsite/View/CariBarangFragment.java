@@ -15,10 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.goldian.yourfishsingsite.Controller.ItemController;
 import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
+import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.Adapter.ItemAdapter;
 import com.goldian.yourfishsingsite.View.Adapter.JenisAdapter;
@@ -34,10 +36,10 @@ public class CariBarangFragment extends Fragment {
     ItemAdapter itemAdapter;
     JenisAdapter jenisAdapter;
     PreferencesModel pref;
-    ProgressBar progressBar;
     Button btnReload;
     boolean isSearch;
     ItemController itemController;
+    SwipeRefreshLayout swipeRefresh;
 
     @Nullable
     @Override
@@ -55,7 +57,7 @@ public class CariBarangFragment extends Fragment {
 
         srcItem = v.findViewById(R.id.srcItem);
         btnReload = v.findViewById(R.id.btnReload);
-        progressBar = v.findViewById(R.id.progressBar);
+        swipeRefresh = v.findViewById(R.id.swipeRefresh);
         fieldNotFound = v.findViewById(R.id.fieldNotFound);
 
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -71,10 +73,12 @@ public class CariBarangFragment extends Fragment {
     private void setListener(){
         btnReload.setOnClickListener(onClick);
         srcItem.setOnQueryTextListener(onQuery);
+        swipeRefresh.setOnRefreshListener(() -> request("",false));
     }
 
     public void request(String attr, boolean isSearch){
         this.isSearch = isSearch;
+        swipeRefresh.setRefreshing(true);
         if (isSearch){
             itemController
                 .getSearchRecomendation(
@@ -94,8 +98,11 @@ public class CariBarangFragment extends Fragment {
     private void setTags(List<ItemModel> itemModelList){
         List<String> jenisList = new ArrayList<>();
         for (ItemModel itemModel : itemModelList) {
-            if (!jenisList.contains(itemModel.getJenis()))
-                jenisList.add(itemModel.getJenis());
+            String[] separated = itemModel.getJenis().split(",");
+            for (String s : separated) {
+                if (!jenisList.contains(s))
+                    jenisList.add(s);
+            }
         }
 
         jenisAdapter = new JenisAdapter(getContext(), this, jenisList);
@@ -103,26 +110,27 @@ public class CariBarangFragment extends Fragment {
     }
 
     public void result(List<ItemModel> itemModelList){
-        if (itemModelList.size()>0){
-            progressBar.setVisibility(View.GONE);
-            fieldNotFound.setVisibility(View.GONE);
+        if (itemModelList != null){
+            if (itemModelList.size()>0){
+                fieldNotFound.setVisibility(View.GONE);
 
-            if (isSearch){
-                srcItem.setQuery("", false);
-                srcItem.clearFocus();
-                //srcItem.setIconified(true);
+                if (isSearch){
+                    srcItem.setQuery("", false);
+                    srcItem.clearFocus();
+                    //srcItem.setIconified(true);
+                }
             }
+            else {
+                if (isSearch)
+                    fieldNotFound.setVisibility(View.VISIBLE);
+                else
+                    btnReload.setVisibility(View.VISIBLE);
+            }
+            itemAdapter = new ItemAdapter(getContext(), itemModelList, itemModelList.size(), "horizontal");
+            recyclerView.setAdapter(itemAdapter);
+            setTags(itemModelList);
         }
-        else {
-            progressBar.setVisibility(View.GONE);
-            if (isSearch)
-                fieldNotFound.setVisibility(View.VISIBLE);
-            else
-                btnReload.setVisibility(View.VISIBLE);
-        }
-        itemAdapter = new ItemAdapter(getContext(), itemModelList, itemModelList.size(), "horizontal");
-        recyclerView.setAdapter(itemAdapter);
-        setTags(itemModelList);
+        swipeRefresh.setRefreshing(false);
 
     }
 
@@ -130,7 +138,6 @@ public class CariBarangFragment extends Fragment {
     //---------------
     View.OnClickListener onClick = view -> {
         if (view == btnReload) {
-            progressBar.setVisibility(View.VISIBLE);
             btnReload.setVisibility(View.GONE);
             request("",false);
         }

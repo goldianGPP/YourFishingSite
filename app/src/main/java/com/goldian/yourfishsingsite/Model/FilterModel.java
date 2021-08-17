@@ -1,7 +1,10 @@
 package com.goldian.yourfishsingsite.Model;
 
+import android.widget.EditText;
+
 public class FilterModel {
 
+    //set string to indonesian rupisah's format
     public String setToRupiah(String value){
         int length = value.length(), count = 0;
         String output = "";
@@ -15,11 +18,13 @@ public class FilterModel {
         return "Rp. " + output;
     }
 
-    public Integer subtotal(Integer a, Integer b){
-        return (a + b);
-    }
-
-    public Integer total(Integer a, Integer b){
-        return (a * b);
+    //check if field (edit text) is empty
+    public boolean isFieldEmpty(EditText editText){
+        if (editText.getText().toString().equals("")) {
+            editText.setError("isi");
+            return false;
+        }
+        else
+            return true;
     }
 }

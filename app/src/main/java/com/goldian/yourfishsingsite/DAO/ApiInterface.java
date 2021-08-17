@@ -61,6 +61,10 @@ public interface ApiInterface {
             @Field("password") String password
     );
 
+    @DELETE("user")
+    @FormUrlEncoded
+    Call<Boolean> deleteUser(@Field("id_pengguna") String id_pengguna);
+
     @GET("user")
     Call<List<PenggunaModel>> profileUser();
 
@@ -69,9 +73,15 @@ public interface ApiInterface {
 //    @FormUrlEncoded
 //    Call<ItemModel> detailItem(@Field("id_item") String id_item);
 //
+    @GET("item/{id_pengguna}")
+    Call<List<ItemModel>> getItems(@Path("id_pengguna") String id_pengguna);
+
+    @GET("item/rated/{id_pengguna}")
+    Call<List<ItemModel>> getRatedItems(@Path("id_pengguna") String id_pengguna );
+
     @POST("item")
     @Multipart
-    Call<ItemModel> postItem(
+    Call<Boolean> postItem(
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("nama") RequestBody nama,
             @Part("jenis") RequestBody jenis,
@@ -81,9 +91,24 @@ public interface ApiInterface {
             @Part MultipartBody.Part file
     );
 
+    @POST("item/rating")
+    @FormUrlEncoded
+    Call<Boolean> setRating(
+            @Field("id_item") String id_item,
+            @Field("id_pengguna") String id_pengguna,
+            @Field("rating") String rating
+    );
+
+    @POST("item/image")
+    @Multipart
+    Call<Boolean> updateItem(
+            @Part("id_item") RequestBody id_item,
+            @Part MultipartBody.Part file
+    );
+
     @PUT("item")
     @FormUrlEncoded
-    Call<ItemModel> updateItem(
+    Call<Boolean> updateItem(
             @Field("id_item") String id_item,
             @Field("nama") String nama,
             @Field("jenis") String jenis,
@@ -92,22 +117,9 @@ public interface ApiInterface {
             @Field("web") String web
     );
 
-    @POST("item/image")
-    @Multipart
-    Call<ItemModel> updateItem(
-            @Field("id_item") RequestBody id_item,
-            @Part MultipartBody.Part file
-    );
-
     @DELETE("item")
     @FormUrlEncoded
-    Call<String> deleteItem(@Field("id_item") String id_item);
-
-    @GET("item/{id_pengguna}")
-    Call<List<ItemModel>> getItems(@Path("id_pengguna") String id_pengguna);
-
-    @GET("item/rated/{id_pengguna}")
-    Call<List<ItemModel>> getRatedItems(@Path("id_pengguna") String id_pengguna );
+    Call<Boolean> deleteItem(@Field("id_item") String id_item);
 
     //RECOMENDATION---------------------------------------------------------------------------------------------------------//
     @GET("CtrlRecomender/itembased/{id_pengguna}/{id_item}/{jenis}")
@@ -132,7 +144,7 @@ public interface ApiInterface {
     //EVENT---------------------------------------------------------------------------------------------------------//
     @POST("event")
     @Multipart
-    Call<EventModel> postEvent(
+    Call<Boolean> postEvent(
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("title") RequestBody title,
             @Part("day") RequestBody day,
@@ -150,8 +162,11 @@ public interface ApiInterface {
 
     @PUT("event")
     @FormUrlEncoded
-    Call<EventModel> updateEvent(
+    Call<Boolean> updateEvent(
             @Field("id_event") String id_event,
+            @Field("day") String day,
+            @Field("month") String month,
+            @Field("year") String year,
             @Field("title") String title,
             @Field("deskripsi") String deskripsi,
             @Field("link") String link
@@ -159,10 +174,14 @@ public interface ApiInterface {
 
     @POST("event/image")
     @Multipart
-    Call<EventModel> updateEvent(
-            @Field("id_event") RequestBody id_event,
+    Call<Boolean> updateEvent(
+            @Part("id_event") RequestBody id_event,
             @Part MultipartBody.Part file
     );
+
+    @DELETE("event")
+    @FormUrlEncoded
+    Call<Boolean> deleteEvent(@Field("id_event") String id_event);
 
     @GET("event")
     Call<List<EventModel>> getEvent();
@@ -170,7 +189,7 @@ public interface ApiInterface {
     //LOKASI---------------------------------------------------------------------------------------------------------//
     @POST("lokasi")
     @Multipart
-    Call<LokasiModel> postLokasi(
+    Call<Boolean> postLokasi(
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("nama") RequestBody nama,
             @Part("deskripsi") RequestBody deskripsi,
@@ -180,21 +199,25 @@ public interface ApiInterface {
             @Part MultipartBody.Part file
     );
 
-    @PUT("event")
+    @PUT("lokasi")
     @FormUrlEncoded
-    Call<LokasiModel> updateLokasi(
+    Call<Boolean> updateLokasi(
             @Field("id_lokasi") String id_lokasi,
             @Field("nama") String nama,
             @Field("ikan") String ikan,
             @Field("deskripsi") String deskripsi
     );
 
-    @POST("event/image")
+    @POST("lokasi/image")
     @Multipart
-    Call<LokasiModel> updateLokasi(
-            @Field("id_lokasi") RequestBody id_lokasi,
+    Call<Boolean> updateLokasi(
+            @Part("id_lokasi") RequestBody id_lokasi,
             @Part MultipartBody.Part file
     );
+
+    @DELETE("lokasi")
+    @FormUrlEncoded
+    Call<Boolean> deleteLokasi(@Field("id_lokasi") String id_lokasi);
 
     @GET("lokasi/{id_pengguna}")
     Call<List<LokasiModel>> getLokasi(
@@ -226,6 +249,14 @@ public interface ApiInterface {
             @Field("reply_to") String reply_to,
             @Field("reply") String reply
     );
+
+    @DELETE("comment")
+    @FormUrlEncoded
+    Call<Boolean> deleteComment(@Field("id_comment") String id_comment);
+
+    @DELETE("comment/reply")
+    @FormUrlEncoded
+    Call<Boolean> deleteReply(@Field("id_reply") String id_reply);
 
     @GET("comment/reply/{id_comment}")
     Call<List<CommentModel>> getReply(

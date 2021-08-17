@@ -186,6 +186,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         bundle.putString("deskripsi", lokasiModel.getDeskripsi());
         bundle.putString("id_lokasi", lokasiModel.getId_lokasi());
         bundle.putString("img", lokasiModel.getImg());
+        bundle.putString("key", lokasiModel.getImg_key());
         fragment.setArguments(bundle);
         setFragment(fragment);
         return true;

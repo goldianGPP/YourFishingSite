@@ -16,9 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.goldian.yourfishsingsite.Controller.LokasiController;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 
 import java.io.FileNotFoundException;
@@ -29,13 +31,16 @@ import okhttp3.RequestBody;
 
 public class TambahLokasiActivity extends AppCompatActivity {
 
+    Uri uri;
+
+    PreferencesModel pref;
+    ProgressDialogModel dialogModel;
+    FilterModel filterModel;
+
     ImageView imgMap;
     TextView txtLatitude, txtLongitude;
     EditText txtNama, txtDeskripsi;
-    PreferencesModel pref;
     Button btnMap, btnImg;
-    Uri uri;
-    ProgressDialogModel dialogModel;
 
 
     @Override
@@ -66,8 +71,11 @@ public class TambahLokasiActivity extends AppCompatActivity {
 
     private void init() {
         getSupportActionBar().setTitle("Tambah Lokasi");
+
         pref = new PreferencesModel(this,"login");
         dialogModel = new ProgressDialogModel(this);
+        filterModel = new FilterModel();
+
         imgMap = findViewById(R.id.imgMap);
         btnImg = findViewById(R.id.btnImg);
         txtLatitude = findViewById(R.id.txtLatitude);
@@ -128,13 +136,19 @@ public class TambahLokasiActivity extends AppCompatActivity {
         dialogModel.dismiss();
     }
 
+    private boolean validate(){
+        return new Validation()
+                .isFieldOk(txtNama,1,20)
+                .validate();
+    }
+
     //listener
     //---------------
     @SuppressLint("IntentReset")
     View.OnClickListener onClick = view -> {
         if (view == btnMap){
-            if (isFieldEmpty(txtNama) && isFieldEmpty(txtDeskripsi) && isFieldEmpty(txtDeskripsi)) {
-                if (!uri.equals(null))
+            if (validate()) {
+                if (uri != null)
                     request();
                 else
                     Toast.makeText(this, "masukkan gambar", Toast.LENGTH_LONG).show();;

@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.R;
 import com.google.android.material.navigation.NavigationView;
@@ -67,11 +69,9 @@ public class MainActivity extends AppCompatActivity {
     private void initImageObject(){
         CircleImageView imgProfile = findViewById(R.id.imgProfile);
         filename = getResources().getString(R.string.img_url_user)+pref.read("id_pengguna")+".jpg";
-        Picasso.get().load(filename)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .placeholder(R.drawable.img_profile)
-                .error(R.drawable.img_profile)
+        Glide.with(this)
+                .load(filename)
+                .signature(new ObjectKey(pref.read("key")))
                 .into(imgProfile);
     }
 

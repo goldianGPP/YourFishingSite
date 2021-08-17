@@ -1,10 +1,13 @@
 package com.goldian.yourfishsingsite.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.goldian.yourfishsingsite.Controller.EventController;
 import com.goldian.yourfishsingsite.Controller.LokasiController;
@@ -23,7 +26,7 @@ public class TampilLokasiActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     LokasiAdapter lokasiAdapter;
     PreferencesModel pref;
-    ProgressDialogModel dialogModel;
+    SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +36,29 @@ public class TampilLokasiActivity extends AppCompatActivity {
         request();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            request();
+        }
+    }
+
     private void init(){
         getSupportActionBar().setTitle("Tampil Lokasi");
         pref = new PreferencesModel(this,"login");
-        dialogModel = new ProgressDialogModel(this);
+
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(this::request);
     }
 
     private void request(){
-        dialogModel.show();
+        swipeRefresh.setRefreshing(true);
         new LokasiController(this)
                 .getLokasi(
                         pref.read("id_pengguna")
@@ -56,7 +70,7 @@ public class TampilLokasiActivity extends AppCompatActivity {
             lokasiAdapter = new LokasiAdapter(this, lokasiModels);
             recyclerView.setAdapter(lokasiAdapter);
         }
-        dialogModel.dismiss();
+        swipeRefresh.setRefreshing(false);
     }
 
 }

@@ -24,7 +24,7 @@
                     android:id="@+id/imgItem"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/img_logo_main"
                     app:layout_constraintDimensionRatio="5:4"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -61,13 +61,18 @@
                         android:layout_marginStart="10dp"
                         android:textColor="@color/black"
                         android:textSize="20sp"/>
-                    <RatingBar
-                        android:id="@+id/ratingItem"
+                    <LinearLayout
+                        android:id="@+id/btnRating"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginStart="10dp"
-                        style="?android:attr/ratingBarStyleIndicator"/>
+                        android:layout_height="wrap_content">
+                        <RatingBar
+                            android:id="@+id/ratingItem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="10dp"
+                            style="?android:attr/ratingBarStyleIndicator"/>
+                    </LinearLayout>
                     <Button
                         android:id="@+id/btnLink"
                         android:layout_width="match_parent"
@@ -101,7 +106,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        android:background="@drawable/button_white"
+                        android:background="@drawable/button_grey"
                         android:text="ubah"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

@@ -1,7 +1,7 @@
 package com.goldian.yourfishsingsite.Model;
 
 public class PenggunaModel {
-    String id_pengguna, nama, username, email, password, auth, sumitemrating, sumitemrated;
+    String id_pengguna, nama, username, email, password, auth, sumitemrating, sumitemrated, img_key;
 
     public String getId_pengguna() {
         return id_pengguna;
@@ -65,5 +65,13 @@ public class PenggunaModel {
 
     public void setSumitemrated(String sumitemrated) {
         this.sumitemrated = sumitemrated;
+    }
+
+    public String getImg_key() {
+        return img_key;
+    }
+
+    public void setImg_key(String img_key) {
+        this.img_key = img_key;
     }
 }

@@ -14,18 +14,19 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MultipartBody;
@@ -40,7 +41,7 @@ public class UbahProfileActivity extends AppCompatActivity {
     Uri uri;
     Bitmap bitmap;
     String BODYNAME = "image";
-    PreferencesModel preferences;
+    PreferencesModel pref;
     ProgressDialogModel dialog;
 
     @Override
@@ -78,7 +79,7 @@ public class UbahProfileActivity extends AppCompatActivity {
 
     private void init(){
         getSupportActionBar().setTitle("Ubah Profile");
-        preferences = new PreferencesModel(this,"login");
+        pref = new PreferencesModel(this,"login");
         dialog = new ProgressDialogModel(this);
         imageModel = new ImageModel(this);
         btnImg = findViewById(R.id.btnImg);
@@ -93,11 +94,9 @@ public class UbahProfileActivity extends AppCompatActivity {
         txtNama.setText(b.getString("nama"));
 
         CircleImageView imgProfile = findViewById(R.id.imgProfile);
-        Picasso.get().load(b.getString("img"))
-                .networkPolicy(NetworkPolicy.NO_CACHE)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .placeholder(R.drawable.img_profile)
-                .error(R.drawable.img_profile)
+        Glide.with(this)
+                .load(b.getString("img"))
+                .signature(new ObjectKey(pref.read("key")))
                 .into(imgProfile);
     }
 
@@ -116,7 +115,7 @@ public class UbahProfileActivity extends AppCompatActivity {
     }
 
     private void postImage(){
-        RequestBody id_pengguna = imageModel.requestBody(preferences.read("id_pengguna"));
+        RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
         MultipartBody.Part file = imageModel.multipartBody(getContentResolver(),bitmap,BODYNAME);
         dialog.show();
         new PenggunaController(this).updateUserImg(
@@ -127,18 +126,26 @@ public class UbahProfileActivity extends AppCompatActivity {
 
     private void updateUser(){
         new PenggunaController(this).updateUser(
-                preferences.read("id_pengguna"),
+                pref.read("id_pengguna"),
                 txtNama.getText().toString(),
                 txtUsername.getText().toString()
         );
     }
 
     public void result(boolean bool){
+        dialog.dismiss();
         if (bool){
+            pref.write("key", Calendar.getInstance().getTime().toString());
             setResult(RESULT_OK);
             finish();
         }
-        dialog.dismiss();
+    }
+
+    private boolean validate(){
+        return new Validation()
+                .isFieldOk(txtUsername,3, 10)
+                .isFieldOk(txtNama,1,20)
+                .validate();
     }
 
     //listener
@@ -151,7 +158,7 @@ public class UbahProfileActivity extends AppCompatActivity {
             startActivityForResult(photoPickerIntent, 1);
         }
         else if (view == btnUpdate){
-            if (isFieldEmpty(txtNama) && isFieldEmpty(txtUsername))
+            if (validate())
                 updateUser();
             else
                 Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG);

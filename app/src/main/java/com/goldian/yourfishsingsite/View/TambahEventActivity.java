@@ -8,21 +8,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.goldian.yourfishsingsite.Controller.EventController;
+import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
+import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -30,13 +37,17 @@ import okhttp3.RequestBody;
 public class TambahEventActivity extends AppCompatActivity {
     Button btnImg, btnAddEvent;
     ImageView imgEvent;
-    EditText txtTitle, txtDeskripsi, txtLink;
+    ImageButton btnDate;
+    EditText txtTitle, txtDeskripsi, txtLink, txtDate;
     ImageModel imageModel;
     ProgressDialogModel dialogModel;
+    FilterModel filterModel;
+    CalendarView datePicker;
 
     Uri uri;
     Bitmap bitmap;
     PreferencesModel pref;
+    Integer month, year, day;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,39 +77,37 @@ public class TambahEventActivity extends AppCompatActivity {
 
     private void init() {
         getSupportActionBar().setTitle("Tambah Event");
+
         imageModel = new ImageModel(this);
         dialogModel = new ProgressDialogModel(this);
         pref = new PreferencesModel(this,"login");
+        filterModel = new FilterModel();
 
         btnImg = findViewById(R.id.btnImg);
         btnAddEvent = findViewById(R.id.btnAddEvent);
+        btnDate = findViewById(R.id.btnDate);
         imgEvent = findViewById(R.id.imgEvent);
+        txtDate = findViewById(R.id.txtDate);
         txtTitle = findViewById(R.id.txtTitle);
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         txtLink = findViewById(R.id.txtLink);
+        datePicker = findViewById(R.id.datePicker);
     }
 
     private void setListener(){
         btnAddEvent.setOnClickListener(onClick);
         btnImg.setOnClickListener(onClick);
-    }
-
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
+        btnDate.setOnClickListener(onClick);
+        datePicker.setOnDayClickListener(onDate);
     }
 
     private void request(){
         Bundle bundle = getIntent().getExtras();
         RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
         RequestBody title = imageModel.requestBody(txtTitle.getText().toString());
-        RequestBody day = imageModel.requestBody(bundle.getString("day"));
-        RequestBody month = imageModel.requestBody(bundle.getString("month"));
-        RequestBody year = imageModel.requestBody(bundle.getString("year"));
+        RequestBody day = imageModel.requestBody(this.day.toString());
+        RequestBody month = imageModel.requestBody(this.month.toString());
+        RequestBody year = imageModel.requestBody(this.year.toString());
         RequestBody link = imageModel.requestBody(txtLink.getText().toString());
         RequestBody deskripsi = imageModel.requestBody(txtDeskripsi.getText().toString());
         MultipartBody.Part file = imageModel.multipartBody(uri,"image");
@@ -125,13 +134,22 @@ public class TambahEventActivity extends AppCompatActivity {
         dialogModel.dismiss();
     }
 
+    private boolean validate(){
+        return new Validation()
+                .isEmpty(txtLink)
+                .isFieldOk(txtTitle,1,20)
+                .isEmpty(txtDeskripsi)
+                .isEmpty(txtDate)
+                .validate();
+    }
+
     //Listener
     //-----------
     @SuppressLint("IntentReset")
     View.OnClickListener onClick = view -> {
         if (view == btnAddEvent){
-            if (isFieldEmpty(txtLink) && isFieldEmpty(txtTitle) && isFieldEmpty(txtDeskripsi)) {
-                if (!uri.equals(null))
+            if (validate()) {
+                if (uri != null)
                     request();
                 else
                     Toast.makeText(this, "masukkan gambar", Toast.LENGTH_LONG).show();;
@@ -144,5 +162,21 @@ public class TambahEventActivity extends AppCompatActivity {
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, 1);
         }
+        else if (view == btnDate){
+            if (datePicker.getVisibility() == View.VISIBLE)
+                datePicker.setVisibility(View.GONE);
+            else
+                datePicker.setVisibility(View.VISIBLE);
+        }
+    };
+
+    @SuppressLint("SetTextI18n")
+    OnDayClickListener onDate = eventDay -> {
+        Calendar calendar = eventDay.getCalendar();
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+        txtDate.setText(day+"/"+month+"/"+year);
+        datePicker.setVisibility(View.GONE);
     };
 }

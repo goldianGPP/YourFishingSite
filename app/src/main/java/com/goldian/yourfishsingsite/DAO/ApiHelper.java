@@ -8,9 +8,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiHelper {
 
-    public static final String BASE_URL="http://192.168.100.27:8082/CodeIgniter/fishingsite/api/";
-    //    public static final String BASE_URL="http://192.168.42.123:8082/CodeIgniter/fishingsite/api/";
-//    public static final String BASE_URL="http://192.168.43.146:8082/CodeIgniter/fishingsite/api/";
+//    main wifi
+//    public static final String BASE_URL="http://192.168.100.27:8082/CodeIgniter/fishingsite/api/";
+
+//    secondary wifi
+//        public static final String BASE_URL="http://192.168.42.123:8082/CodeIgniter/fishingsite/api/";
+
+//    phone
+    public static final String BASE_URL=  "http://192.168.43.146:8082/CodeIgniter/fishingsite/api/";
+
     public static Retrofit retrofit = null;
 
     public static Retrofit getClient(){
