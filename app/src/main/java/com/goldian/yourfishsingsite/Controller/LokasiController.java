@@ -3,18 +3,21 @@ package com.goldian.yourfishsingsite.Controller;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.goldian.yourfishsingsite.DAO.ApiHelper;
 import com.goldian.yourfishsingsite.DAO.ApiInterface;
 import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.LokasiModel;
+import com.goldian.yourfishsingsite.Model.PenggunaModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.FragmentActivity;
 import com.goldian.yourfishsingsite.View.TambahLokasiActivity;
 import com.goldian.yourfishsingsite.View.MapLokasiFragment;
 import com.goldian.yourfishsingsite.View.TampilLokasiActivity;
 import com.goldian.yourfishsingsite.View.UbahLokasiActivity;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.List;
 
@@ -64,49 +67,13 @@ public class LokasiController {
     //-------------------------------------------------------------------------------
     //get lokasi by user
     public void getLokasi(String id_pengguna){
-        api.getLokasi(id_pengguna).enqueue(new Callback<List<LokasiModel>>() {
-            @Override
-            public void onResponse(Call<List<LokasiModel>> call, Response<List<LokasiModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(null);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<LokasiModel>> call, Throwable t) {
-                Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                result(null);
-                call.cancel();
-            }
-        });
+        api.getLokasi(id_pengguna).enqueue(resListObject);
     }
 
     //get lokasi
     public void getLokasi(){
         api.getLokasi()
-                .enqueue(new Callback<List<LokasiModel>>() {
-                    @Override
-                    public void onResponse(Call<List<LokasiModel>> call, Response<List<LokasiModel>> response) {
-                        if (response.isSuccessful()) {
-                            result(response.body());
-                        }
-                        else {
-                            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                            result(null);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<LokasiModel>> call, Throwable t) {
-                        Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                        result(null);
-                        call.cancel();
-                    }
-                });
+                .enqueue(resListObject);
     }
 
     //Post
@@ -121,137 +88,76 @@ public class LokasiController {
                 latitude,
                 longitude,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result(false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
-    }
-
-    //post event
-    public void postEvent(RequestBody id_pengguna, RequestBody title, RequestBody day, RequestBody month, RequestBody year, RequestBody link, RequestBody deskripsi, MultipartBody.Part file){
-        api.postEvent(
-                id_pengguna,
-                title,
-                day,
-                month,
-                year,
-                link,
-                deskripsi,
-                file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
     //Update
     //-------------------------------------------------------------------------------
     //update lokasi
-    public void updateLokasi(String id_lokasi, String title, String deskripsi, String link){
-        api.updateLokasi(
-                id_lokasi,
-                title,
-                deskripsi,
-                link
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+    public void updateLokasi(LokasiModel lokasiModel){
+        api.updateLokasi(lokasiModel).enqueue(resBoolean);
     }
 
     //update image lokasi
-    public void updateLokasi(RequestBody id_lokasi, MultipartBody.Part file){
+    public void updateLokasi(RequestBody id_lokasi, RequestBody id_pengguna, RequestBody cur_img, MultipartBody.Part file){
         api.updateLokasi(
                 id_lokasi,
+                id_pengguna,
+                cur_img,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
     //Delete
     //-------------------------------------------------------------------------------
     //delete lokasi
-    public void deleteLokasi(String id_lokasi){
-        api.deleteLokasi(id_lokasi).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+    public void deleteLokasi(String id_lokasi, String img){
+        api.deleteLokasi(id_lokasi, img).enqueue(resBoolean);
     }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------
+    /*
+     * call back result variable for retrofit
+     */
+    //BOOLEAN RESULTS
+    Callback resBoolean = new Callback<Boolean>() {
+        @Override
+        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            if (response.isSuccessful()) {
+                result(response.body());
+                TastyToast.makeText(context, context.getResources().getString(R.string.success), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+            }
+            else {
+                TastyToast.makeText(context, context.getResources().getString(R.string.failed), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                result(false);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Boolean> call, Throwable t) {
+            TastyToast.makeText(context, context.getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            result(false);
+            call.cancel();
+        }
+    };
+    //LIST OF OBJECT RESULTS
+    Callback resListObject = new Callback<List<LokasiModel>>() {
+        @Override
+        public void onResponse(Call<List<LokasiModel>> call, Response<List<LokasiModel>> response) {
+            if (response.isSuccessful()) {
+                result(response.body());
+            }
+            else {
+                Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                result(null);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<LokasiModel>> call, Throwable t) {
+            Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
+            result(null);
+            call.cancel();
+        }
+    };
 }

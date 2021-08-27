@@ -40,7 +40,7 @@ public class JenisAdapter extends RecyclerView.Adapter<JenisAdapter.JenisHolder>
         holder.txtJenis.setText(jenis);
         holder.btnCard.setOnClickListener(view -> {
             Toast.makeText(context, jenis, Toast.LENGTH_SHORT).show();
-            fragment.request(jenis,false);
+            fragment.request(jenis,false, false);
         });
     }
 

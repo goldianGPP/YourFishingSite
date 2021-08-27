@@ -17,14 +17,4 @@ public class FilterModel {
         }
         return "Rp. " + output;
     }
-
-    //check if field (edit text) is empty
-    public boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
-    }
 }

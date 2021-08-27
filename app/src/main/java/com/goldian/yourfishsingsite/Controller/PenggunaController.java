@@ -12,6 +12,7 @@ import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.LoginActivity;
 import com.goldian.yourfishsingsite.View.UbahProfileActivity;
 import com.goldian.yourfishsingsite.View.RegisterActivity;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -40,97 +41,70 @@ public class PenggunaController {
             ((RegisterActivity)context).result(bool);
     }
 
-    public void login(String username, String password){
-        api.loginUser(username,password)
-            .enqueue(new Callback<PenggunaModel>() {
-                @Override
-                public void onResponse(@NonNull Call<PenggunaModel> call, @NonNull Response<PenggunaModel> response) {
-                    if (response.isSuccessful()){
-                        result(response.body());
-                    }
-                    else {
-                        Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                        result((PenggunaModel) null);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<PenggunaModel> call, @NonNull Throwable t) {
-                    result((PenggunaModel) null);
-                    Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                    call.cancel();
-                }
-            });
+    public void login(PenggunaModel penggunaModel){
+        api.loginUser(penggunaModel).enqueue(resObject);
     }
 
-    public void register(String email, String nama, String username, String password){
-        api.registerUser(email, nama, username, password)
-            .enqueue(new Callback<PenggunaModel>() {
-                @Override
-                public void onResponse(Call<PenggunaModel> call, Response<PenggunaModel> response) {
-                    if (response.isSuccessful()){
-                        result(true);
-                    }
-                    else {
-                        result(false);
-                        Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PenggunaModel> call, Throwable t) {
-                    Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                    result(false);
-                    call.cancel();
-                }
-            });
+    public void register(PenggunaModel penggunaModel){
+        api.registerUser(penggunaModel)
+            .enqueue(resBoolean);
     }
 
-    public void updateUser(String id_pengguna, String nama, String username){
-        api.updateUser(
-                id_pengguna,
-                nama,
-                username
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()){
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+    public void updateUser(PenggunaModel penggunaModel){
+        api.updateUser(penggunaModel).enqueue(resBoolean);
     }
 
     public void updateUserImg(RequestBody id_pengguna, MultipartBody.Part file){
         api.updateUserImg(id_pengguna,file)
-            .enqueue(new Callback<Boolean>() {
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    if (response.isSuccessful()){
-                        result(true);
-                    }
-                    else {
-                        Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                        result(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Boolean> call, Throwable t) {
-                    Toast.makeText(context, R.string.error + " = " + t.getMessage(),Toast.LENGTH_SHORT).show();
-                    result(false);
-                    call.cancel();
-                }
-            });
+            .enqueue(resBoolean);
     }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------
+    /*
+    * call back result variable for retrofit
+     */
+    //BOOLEAN RESULTS
+    Callback resBoolean = new Callback<Boolean>() {
+        @Override
+        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            if (response.isSuccessful()){
+                TastyToast.makeText(context, context.getResources().getString(R.string.success), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                result(true);
+            }
+            else {
+                TastyToast.makeText(context, context.getResources().getString(R.string.failed), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                result(false);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Boolean> call, Throwable t) {
+            TastyToast.makeText(context, context.getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            result(false);
+            call.cancel();
+        }
+    };
+    //OBJECT RESULTS
+    Callback resObject = new Callback<PenggunaModel>() {
+        @Override
+        public void onResponse(@NonNull Call<PenggunaModel> call, @NonNull Response<PenggunaModel> response) {
+            if (response.isSuccessful()){
+                TastyToast.makeText(context, context.getResources().getString(R.string.success), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                result(response.body());
+            }
+            else {
+                TastyToast.makeText(context, context.getResources().getString(R.string.failed), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                result((PenggunaModel) null);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call<PenggunaModel> call, @NonNull Throwable t) {
+            result((PenggunaModel) null);
+            TastyToast.makeText(context, context.getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            call.cancel();
+        }
+    };
 
 
 }

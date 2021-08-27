@@ -23,6 +23,7 @@ import com.goldian.yourfishsingsite.Controller.LokasiController;
 import com.goldian.yourfishsingsite.Model.DialogModel;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
+import com.goldian.yourfishsingsite.Model.LokasiModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.Model.Validation;
@@ -50,7 +51,7 @@ public class UbahLokasiActivity extends AppCompatActivity {
     FilterModel filterModel;
 
     boolean isUpdate;
-    String id_lokasi ;
+    String id_lokasi, img;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,16 +107,17 @@ public class UbahLokasiActivity extends AppCompatActivity {
     //initialize value
     private void setValue(){
         Bundle bundle = getIntent().getExtras();
+        id_lokasi = bundle.getString("id_lokasi");
+        img = bundle.getString("img");
+
         txtLatitude.setText(bundle.getString("latitude"));
         txtLongitude.setText(bundle.getString("longitude"));
-
-        id_lokasi = bundle.getString("id_lokasi");
         txtNama.setText(bundle.getString("nama"));
         txtIkan.setText(bundle.getString("ikan"));
         txtDeskripsi.setText(bundle.getString("deskripsi"));
 
         Glide.with(this)
-                .load(bundle.getString("img"))
+                .load(img)
                 .signature(new ObjectKey(bundle.getString("key")))
                 .into(imgLokasi);
         imgLokasi.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -125,6 +127,7 @@ public class UbahLokasiActivity extends AppCompatActivity {
     private void setListener(){
         btnMap.setOnClickListener(onClick);
         btnImg.setOnClickListener(onClick);
+        btnDelete.setOnClickListener(onClick);
         imgLokasi.setOnClickListener(onClick);
     }
 
@@ -138,11 +141,15 @@ public class UbahLokasiActivity extends AppCompatActivity {
     public void updateImg(){
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_lokasi = imageModel.requestBody(this.id_lokasi);
+        RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
+        RequestBody cur_img = imageModel.requestBody(img.replace(new ImageModel().getBase_url(),""));
         MultipartBody.Part file = imageModel.multipartBody(uri,"image");
         dialogModel.show();
         isUpdate = false;
         lokasiController.updateLokasi(
                 id_lokasi,
+                id_pengguna,
+                cur_img,
                 file
         );
     }
@@ -151,11 +158,13 @@ public class UbahLokasiActivity extends AppCompatActivity {
     private void update(){
         dialogModel.show();
         isUpdate = true;
+        LokasiModel lokasiModel = new LokasiModel();
         lokasiController.updateLokasi(
-                id_lokasi,
-                txtNama.getText().toString(),
-                txtIkan.getText().toString(),
-                txtDeskripsi.getText().toString()
+            lokasiModel
+                .setId_lokasi(id_lokasi)
+                .setNama(txtNama.getText().toString())
+                .setIkan(txtIkan.getText().toString())
+                .setDeskripsi(txtDeskripsi.getText().toString())
         );
     }
 
@@ -164,7 +173,8 @@ public class UbahLokasiActivity extends AppCompatActivity {
         dialogModel.show();
         isUpdate = true;
         lokasiController.deleteLokasi(
-                id_lokasi
+                id_lokasi,
+                img.replace(new ImageModel().getBase_url(),"")
         );
     }
 

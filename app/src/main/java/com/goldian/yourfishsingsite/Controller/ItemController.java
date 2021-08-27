@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.goldian.yourfishsingsite.DAO.ApiHelper;
 import com.goldian.yourfishsingsite.DAO.ApiInterface;
 import com.goldian.yourfishsingsite.Model.ItemModel;
+import com.goldian.yourfishsingsite.Model.LokasiModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.FragmentActivity;
 import com.goldian.yourfishsingsite.View.DetailBarangActivity;
@@ -16,6 +17,7 @@ import com.goldian.yourfishsingsite.View.TambahBarangActivity;
 import com.goldian.yourfishsingsite.View.TampilBarangActivity;
 import com.goldian.yourfishsingsite.View.UbahBarangActivity;
 import com.goldian.yourfishsingsite.View.CariBarangFragment;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,29 +80,7 @@ public class ItemController {
                 id_pengguna,
                 id_item,
                 jenis
-        ).enqueue(new Callback<List<ItemModel>>() {
-            @Override
-            public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                    Log.i(TAG, "onSuccess: " + response.body());
-                }
-                else {
-                    result( null);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ItemModel>> call, Throwable t) {
-                result( null);
-//                Toast.makeText(context, R.string.error,Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, t.getMessage(),Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onFailure: " + t.getMessage());
-                call.cancel();
-
-            }
-        });
+        ).enqueue(resListObject);
     }
 
     //get recomendation userbased
@@ -108,25 +88,7 @@ public class ItemController {
         api.getRecomendation(
                 id_pengguna,
                 jenis
-        ).enqueue(new Callback<List<ItemModel>>() {
-            @Override
-            public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result( null);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ItemModel>> call, Throwable t) {
-                result( null);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        ).enqueue(resListObject);
     }
 
     //get recomendation userbased by search
@@ -134,75 +96,34 @@ public class ItemController {
         api.getSearchRecomendation(
                 id_pengguna,
                 search
-        ).enqueue(new Callback<List<ItemModel>>() {
-            @Override
-            public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result(new ArrayList<>());
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ItemModel>> call, Throwable t) {
-                result(new ArrayList<>());
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        ).enqueue(resListObject);
     }
 
     //get item
-    public void getItems(String id_pengguna) {
-        api.getItems(
+    public void getMyItems(String id_pengguna) {
+        api.getMyItems(
                 id_pengguna
-        ).enqueue(new Callback<List<ItemModel>>() {
-            @Override
-            public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result( null);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
+        ).enqueue(resListObject);
+    }
 
-            @Override
-            public void onFailure(Call<List<ItemModel>> call, Throwable t) {
-                result( null);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+    //get item
+    public void getItems(String jenis) {
+        api.getItems(
+                jenis
+        ).enqueue(resListObject);
+    }
+
+    public void getSearchItems(String search) {
+        api.getSearchItems(
+                search
+        ).enqueue(resListObject);
     }
 
     //get rated item
     public void getRatedItems(String id_pengguna) {
         api.getRatedItems(
                 id_pengguna
-        ).enqueue(new Callback<List<ItemModel>>() {
-            @Override
-            public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result( null);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ItemModel>> call, Throwable t) {
-                result( null);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        ).enqueue(resListObject);
     }
 
     //Post
@@ -217,134 +138,80 @@ public class ItemController {
                 harga,
                 web,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()){
-                    result(response.body());
-                }
-                else {
-                    result(false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                result(false);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
-    public void setRating(String id_item, String id_pengguna, String rating){
-        api.setRating(
-                id_item,
-                id_pengguna,
-                rating
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()){
-                    result(response.body());
-                    Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    result(false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                result(false);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+    public void setRating(ItemModel itemModel){
+        api.setRating(itemModel).enqueue(resBoolean);
     }
 
     //Update
     //-------------------------------------------------------------------------------
     //update item
-    public void updateItem(String id_item, String nama, String jenis, String deskripsi, String harga, String web){
-        api.updateItem(
-                id_item,
-                nama,
-                jenis,
-                deskripsi,
-                harga,
-                web
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result(false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                result(false);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+    public void updateItem(ItemModel itemModel){
+        api.updateItem(itemModel).enqueue(resBoolean);
     }
 
     //update image item
-    public void updateItem(RequestBody id_item, MultipartBody.Part file){
+    public void updateItem(RequestBody id_item, RequestBody cur_img, MultipartBody.Part file){
         api.updateItem(
                 id_item,
+                cur_img,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result(false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                result(false);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
     //Delete
     //-------------------------------------------------------------------------------
     //delete item
     public void deleteItem(String id_item){
-        api.deleteItem(id_item).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    result( false);
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                result( false);
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-        });
+        api.deleteItem(id_item).enqueue(resBoolean);
     }
+
+
+    //---------------------------------------------------------------------------------------------------------------------------------------
+    /*
+     * call back result variable for retrofit
+     */
+    //BOOLEAN RESULTS
+    Callback resBoolean = new Callback<Boolean>() {
+        @Override
+        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            if (response.isSuccessful()) {
+                result(response.body());
+                TastyToast.makeText(context, context.getResources().getString(R.string.success), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+            }
+            else {
+                result( false);
+                TastyToast.makeText(context, context.getResources().getString(R.string.failed), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Boolean> call, Throwable t) {
+            result( false);
+            TastyToast.makeText(context, context.getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            call.cancel();
+        }
+    };
+    //LIST OF OBJECT RESULTS
+    Callback resListObject = new Callback<List<ItemModel>>() {
+        @Override
+        public void onResponse(Call<List<ItemModel>> call, Response<List<ItemModel>> response) {
+            if (response.isSuccessful()) {
+                result(response.body());
+            }
+            else {
+                result( null);
+                Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<ItemModel>> call, Throwable t) {
+            result( null);
+            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+            call.cancel();
+        }
+    };
 }

@@ -19,104 +19,117 @@ public class EventModel {
         return id_event;
     }
 
-    public void setId_event(String id_event) {
+    public EventModel setId_event(String id_event) {
         this.id_event = id_event;
+        return this;
     }
 
     public String getId_pengguna() {
         return id_pengguna;
     }
 
-    public void setId_pengguna(String id_pengguna) {
+    public EventModel setId_pengguna(String id_pengguna) {
         this.id_pengguna = id_pengguna;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public EventModel setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getLink() {
         return link;
     }
 
-    public void setLink(String link) {
+    public EventModel setLink(String link) {
         this.link = link;
+        return this;
     }
 
     public String getDeskripsi() {
         return deskripsi;
     }
 
-    public void setDeskripsi(String deskripsi) {
+    public EventModel setDeskripsi(String deskripsi) {
         this.deskripsi = deskripsi;
+        return this;
     }
 
     public String getImg() {
-        return new ImageModel().getBase_url() + "event/" + img;
+        return new ImageModel().getBase_url() + img;
     }
 
-    public void setImg(String img) {
+    public EventModel setImg(String img) {
         this.img = img;
+        return this;
     }
 
     public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public EventModel setCreated_at(String created_at) {
         this.created_at = created_at;
+        return this;
     }
 
     public String getEdited_at() {
         return edited_at;
     }
 
-    public void setEdited_at(String edited_at) {
+    public EventModel setEdited_at(String edited_at) {
         this.edited_at = edited_at;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
+        return this;
     }
 
     public String getImg_key() {
         return img_key;
     }
 
-    public void setImg_key(String img_key) {
+    public EventModel setImg_key(String img_key) {
         this.img_key = img_key;
+        return this;
+    }
+
+    public int getDay() {
+        return Integer.parseInt(day);
+    }
+
+    public EventModel setDay(String day) {
+        this.day = day;
+        return this;
+    }
+
+    public int getMonth() {
+        return Integer.parseInt(month);
+    }
+
+    public EventModel setMonth(String month) {
+        this.month = month;
+        return this;
+    }
+
+    public int getYear() {
+        return Integer.parseInt(year);
+    }
+
+    public EventModel setYear(String year) {
+        this.year = year;
+        return this;
     }
 
     public EventDay getEventDay() {
         return eventDay;
     }
 
-    public void setEventDay(EventDay eventDay) {
+    public EventModel setEventDay(EventDay eventDay) {
         this.eventDay = eventDay;
+        return this;
     }
 
     public Calendar getCalendar() {
@@ -129,8 +142,8 @@ public class EventModel {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.HOUR, 0);
         calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.set(Calendar.MONTH, Integer.parseInt(eventModel.getMonth())-1);
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(eventModel.getDay()));
-        calendar.set(Calendar.YEAR, Integer.parseInt(eventModel.getYear()));
+        calendar.set(Calendar.MONTH, eventModel.getMonth()-1);
+        calendar.set(Calendar.DAY_OF_MONTH, eventModel.getDay());
+        calendar.set(Calendar.YEAR, eventModel.getYear());
     }
 }

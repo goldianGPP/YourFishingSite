@@ -174,7 +174,7 @@ public class TambahEventActivity extends AppCompatActivity {
     OnDayClickListener onDate = eventDay -> {
         Calendar calendar = eventDay.getCalendar();
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
+        month = calendar.get(Calendar.MONTH)+1;
         year = calendar.get(Calendar.YEAR);
         txtDate.setText(day+"/"+month+"/"+year);
         datePicker.setVisibility(View.GONE);

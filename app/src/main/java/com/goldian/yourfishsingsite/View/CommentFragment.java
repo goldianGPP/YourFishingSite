@@ -92,10 +92,12 @@ public class CommentFragment extends Fragment {
     //request post comment
     private void request(String id_pengguna, String id, String comment){
         swipeRefresh.setRefreshing(true);
+        CommentModel commentModel = new CommentModel();
         commentController.postComment(
-                id_pengguna,
-                id,
-                comment
+            commentModel
+                .setId_pengguna(id_pengguna)
+                .setIds(id)
+                .setComment(comment)
         );
     }
 

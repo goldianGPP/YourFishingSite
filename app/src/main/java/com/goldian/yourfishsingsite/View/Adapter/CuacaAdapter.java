@@ -1,7 +1,7 @@
 package com.goldian.yourfishsingsite.View.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +19,7 @@ import com.goldian.yourfishsingsite.View.CuacaFragment;
 
 import java.util.Calendar;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
+import java.util.Objects;
 
 public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolder>{
     final Context context;
@@ -46,15 +45,15 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
     @Override
     public CuacaAdapter.WeatherHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_weather_horizontal,viewGroup,false);
-        return new CuacaAdapter.WeatherHolder(view);
+        return new WeatherHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CuacaAdapter.WeatherHolder holder, int position) {
         final CuacaModel currentData = list.get(position);
         String temp = currentData.getDt_txt().substring(8,10), time = currentData.getDt_txt().substring(11);
 
-        Log.i(TAG, "onBindViewHolder: " + hari_ini + " --- " + temp);
         if (hari_ini == Integer.parseInt(temp))
             holder.txtDay.setText("HARI INI");
         else if (besok == Integer.parseInt(temp))
@@ -90,6 +89,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         else return R.drawable.img_sunny;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void setView(CuacaModel currentData){
         int time = Integer.parseInt(currentData.getDt_txt().substring(11,13));
         int template, lighter, weather;
@@ -97,8 +97,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         lighter = setLighter(time);
         weather = setWeather(currentData.getMain().trim());
 
-        ((FragmentActivity)context).getSupportActionBar().setBackgroundDrawable(context.getResources().getDrawable(template));
-        ((FragmentActivity)context).getSupportActionBar().setTitle("Weather");
+        Objects.requireNonNull(((FragmentActivity) context).getSupportActionBar()).setBackgroundDrawable(context.getResources().getDrawable(template));
 
         fragment.setValue(
                 template,
@@ -108,7 +107,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         );
     }
 
-    public class WeatherHolder extends RecyclerView.ViewHolder {
+    public static class WeatherHolder extends RecyclerView.ViewHolder {
         protected CardView btnCard;
         protected ImageView imgWeather;
         protected TextView txtDay, txtTime, txtWeather;

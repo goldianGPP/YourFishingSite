@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class CalendarFragment extends Fragment {
     Calendar calendar;
     TextView txtDate;
     Integer month, year, day;
+    LinearLayout notFound;
 
     EventAdapter eventAdapter;
     PreferencesModel pref;
@@ -76,6 +78,7 @@ public class CalendarFragment extends Fragment {
         cardView = v.findViewById(R.id.cardView);
         btnAddEvent = v.findViewById(R.id.btnAddEvent);
         recyclerView = v.findViewById(R.id.recyclerView);
+        notFound = v.findViewById(R.id.notFound);
 
         calendar = Calendar.getInstance();
 
@@ -143,18 +146,17 @@ public class CalendarFragment extends Fragment {
         List<EventModel> temp = new ArrayList<>();
         if (eventModels != null){
             for (EventModel eventModel: eventModels) {
-                if (eventModel.getEventDay().getCalendar().equals(calendar)) {
+                if (eventModel.getEventDay().getCalendar().equals(calendar))
                     temp.add(eventModel);
-                }
             }
-            if (temp!=null) {
-                eventAdapter = new EventAdapter(getContext(), temp, pref.read("id_pengguna"));
-                recyclerView.setAdapter(eventAdapter);
-            }
+            eventAdapter = new EventAdapter(getContext(), temp, pref.read("id_pengguna"));
+            recyclerView.setAdapter(eventAdapter);
+            if (temp.size()>0)
+                notFound.setVisibility(View.GONE);
             else
-                Toast.makeText(getContext(),"tidak ada event",Toast.LENGTH_SHORT).show();
+                notFound.setVisibility(View.VISIBLE);
         }
         else
-            Toast.makeText(getContext(),"tidak ada event",Toast.LENGTH_SHORT).show();
+            notFound.setVisibility(View.VISIBLE);
     };
 }

@@ -97,7 +97,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="15sp"
-                    android:text="ikan : "/>
+                    android:text="ikan : ex~pisahkan dengan koma: a,b,c dst..."/>
 
                 <EditText
                     android:id="@+id/txtIkan"
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:inputType="text"
-                    android:hint="Ikan: ex~pisahkan dengan koma: a,b,c dst..."/>
+                    android:hint="Ikan"/>
 
                 <TextView
                     android:layout_width="wrap_content"

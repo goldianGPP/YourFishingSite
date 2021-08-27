@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment;
 import com.goldian.yourfishsingsite.DAO.ApiHelper;
 import com.goldian.yourfishsingsite.DAO.ApiInterface;
 import com.goldian.yourfishsingsite.Model.EventModel;
+import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.CalendarFragment;
 import com.goldian.yourfishsingsite.View.TambahEventActivity;
 import com.goldian.yourfishsingsite.View.TampilEventActivity;
 import com.goldian.yourfishsingsite.View.FragmentActivity;
 import com.goldian.yourfishsingsite.View.UbahEventActivity;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.List;
 
@@ -62,49 +64,13 @@ public class EventController {
     //get event
     public void getEvent(){
         api.getEvent()
-                .enqueue(new Callback<List<EventModel>>() {
-                    @Override
-                    public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                        if (response.isSuccessful()) {
-                            result(response.body());
-                        }
-                        else {
-                            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                            result(null);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<EventModel>> call, Throwable t) {
-                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                        result(null);
-                        call.cancel();
-                    }
-                });
+                .enqueue(resListObject);
     }
 
     //get event by id
     public void getEvent(String id_pengguna){
         api.getEvent(id_pengguna)
-                .enqueue(new Callback<List<EventModel>>() {
-                    @Override
-                    public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                        if (response.isSuccessful()) {
-                            result(response.body());
-                        }
-                        else {
-                            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                            result(null);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<EventModel>> call, Throwable t) {
-                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                        result(null);
-                        call.cancel();
-                    }
-                });
+                .enqueue(resListObject);
     }
 
     //Post
@@ -120,108 +86,77 @@ public class EventController {
                 link,
                 deskripsi,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
     //Update
     //-------------------------------------------------------------------------------
     //update event
-    public void updateEvent(String id_event, String day, String month, String year, String title, String deskripsi, String link){
-        api.updateEvent(
-                id_event,
-                day,
-                month,
-                year,
-                title,
-                deskripsi,
-                link
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+    public void updateEvent(EventModel eventModel){
+        api.updateEvent(eventModel).enqueue(resBoolean);
     }
 
     //update image event
-    public void updateEvent(RequestBody id_event, MultipartBody.Part file){
+    public void updateEvent(RequestBody id_event, RequestBody id_pengguna, RequestBody cur_img, MultipartBody.Part file){
         api.updateEvent(
                 id_event,
+                id_pengguna,
+                cur_img,
                 file
-        ).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+        ).enqueue(resBoolean);
     }
 
     //Delete
     //-------------------------------------------------------------------------------
     //delete event
-    public void deleteEvent(String id_event){
-        api.deleteEvent(id_event).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
-                    result(response.body());
-                }
-                else {
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
-                    result(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
-                result(false);
-                call.cancel();
-            }
-        });
+    public void deleteEvent(String id_event, String img){
+        api.deleteEvent(id_event,img).enqueue(resBoolean);
     }
+
+
+    //---------------------------------------------------------------------------------------------------------------------------------------
+    /*
+     * call back result variable for retrofit
+     */
+    //BOOLEAN RESULTS
+    Callback resBoolean = new Callback<Boolean>() {
+        @Override
+        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            if (response.isSuccessful()) {
+                TastyToast.makeText(context, context.getResources().getString(R.string.success), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                result(response.body());
+            }
+            else {
+                TastyToast.makeText(context, context.getResources().getString(R.string.failed), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                result(false);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Boolean> call, Throwable t) {
+            TastyToast.makeText(context, context.getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            result(false);
+            call.cancel();
+        }
+    };
+    //LIST OF OBJECT RESULTS
+    Callback resListObject = new Callback<List<EventModel>>() {
+        @Override
+        public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+            if (response.isSuccessful()) {
+                result(response.body());
+            }
+            else {
+                Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                result(null);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<EventModel>> call, Throwable t) {
+            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+            result(null);
+            call.cancel();
+        }
+    };
 }

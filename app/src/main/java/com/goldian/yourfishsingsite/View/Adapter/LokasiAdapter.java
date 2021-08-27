@@ -62,6 +62,8 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.LokasiHold
     private Intent setExtras(Intent intent,LokasiModel currentData, String url){
         intent.putExtra("id_lokasi", currentData.getId_lokasi());
         intent.putExtra("nama", currentData.getNama());
+        intent.putExtra("latitude", currentData.getLatitude());
+        intent.putExtra("longitude", currentData.getLongitude());
         intent.putExtra("ikan", currentData.getIkan());
         intent.putExtra("deskripsi", currentData.getDeskripsi());
         intent.putExtra("img", url);

@@ -6,24 +6,64 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="10dp"
+            card_view:cardElevation="2dp"
+            card_view:cardUseCompatPadding="true"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/txtJarak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="jarak : "
+                android:textAlignment="center"
+                android:textSize="20sp"
+                card_view:ignore="HardcodedText" />
+        </androidx.cardview.widget.CardView>
+
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/btnAdd"/>
+            android:layout_height="match_parent"/>
 
-        <Button
-            android:id="@+id/btnAdd"
-            android:layout_width="match_parent"
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/floatingManu"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_labelStyle="@color/black"
+            app:fab_labelsPosition="left"
             android:layout_alignParentBottom="true"
-            android:background="@color/blue"
-            android:textColor="@color/white"
-            android:text="tambah lokasi"/>
+            android:layout_alignParentEnd="true">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnDireksi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:fab_title="direksi"
+                app:fab_icon="@drawable/img_direction"
+                app:fab_size="mini"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_title="tambah lokasi"
+                app:fab_icon="@drawable/ic_action_add"
+                app:fab_size="mini"/>
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
 
     <FrameLayout

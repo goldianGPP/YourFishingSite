@@ -11,6 +11,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -24,27 +25,18 @@ import retrofit2.http.Path;
 public interface ApiInterface {
     //USER---------------------------------------------------------------------------------------------------------//
     @POST("user/login")
-    @FormUrlEncoded
     Call<PenggunaModel> loginUser(
-            @Field("username") String username,
-            @Field("password") String password
+            @Body PenggunaModel penggunaModel
     );
 
     @POST("user/register")
-    @FormUrlEncoded
-    Call<PenggunaModel> registerUser(
-            @Field("email") String email,
-            @Field("nama") String nama,
-            @Field("username") String username,
-            @Field("password") String password
+    Call<Boolean> registerUser(
+            @Body PenggunaModel penggunaModel
     );
 
     @PUT("user")
-    @FormUrlEncoded
     Call<Boolean> updateUser(
-            @Field("id_pengguna") String id_pengguna,
-            @Field("nama") String nama,
-            @Field("username") String username
+            @Body PenggunaModel penggunaModel
     );
 
     @POST("user/image")
@@ -61,12 +53,9 @@ public interface ApiInterface {
             @Field("password") String password
     );
 
-    @DELETE("user")
+    @DELETE("user/{id_pengguna}")
     @FormUrlEncoded
-    Call<Boolean> deleteUser(@Field("id_pengguna") String id_pengguna);
-
-    @GET("user")
-    Call<List<PenggunaModel>> profileUser();
+    Call<Boolean> deleteUser(@Path("id_pengguna") String id_pengguna);
 
     //ITEM---------------------------------------------------------------------------------------------------------//
 //    @POST("item/detail")
@@ -74,7 +63,13 @@ public interface ApiInterface {
 //    Call<ItemModel> detailItem(@Field("id_item") String id_item);
 //
     @GET("item/{id_pengguna}")
-    Call<List<ItemModel>> getItems(@Path("id_pengguna") String id_pengguna);
+    Call<List<ItemModel>> getMyItems(@Path("id_pengguna") String id_pengguna);
+
+    @GET("item/items/{jenis}")
+    Call<List<ItemModel>> getItems(@Path("jenis") String jenis);
+
+    @GET("item/search/{jenis}")
+    Call<List<ItemModel>> getSearchItems(@Path("jenis") String jenis);
 
     @GET("item/rated/{id_pengguna}")
     Call<List<ItemModel>> getRatedItems(@Path("id_pengguna") String id_pengguna );
@@ -92,34 +87,26 @@ public interface ApiInterface {
     );
 
     @POST("item/rating")
-    @FormUrlEncoded
     Call<Boolean> setRating(
-            @Field("id_item") String id_item,
-            @Field("id_pengguna") String id_pengguna,
-            @Field("rating") String rating
+            @Body ItemModel itemModel
     );
 
     @POST("item/image")
     @Multipart
     Call<Boolean> updateItem(
             @Part("id_item") RequestBody id_item,
+            @Part("image") RequestBody image,
             @Part MultipartBody.Part file
     );
 
     @PUT("item")
-    @FormUrlEncoded
     Call<Boolean> updateItem(
-            @Field("id_item") String id_item,
-            @Field("nama") String nama,
-            @Field("jenis") String jenis,
-            @Field("deskripsi") String deskripsi,
-            @Field("harga") String harga,
-            @Field("web") String web
+            @Body ItemModel itemModel
     );
 
-    @DELETE("item")
+    @DELETE("item/{id_item}")
     @FormUrlEncoded
-    Call<Boolean> deleteItem(@Field("id_item") String id_item);
+    Call<Boolean> deleteItem(@Path("id_item") String id_item);
 
     //RECOMENDATION---------------------------------------------------------------------------------------------------------//
     @GET("CtrlRecomender/itembased/{id_pengguna}/{id_item}/{jenis}")
@@ -161,27 +148,22 @@ public interface ApiInterface {
     );
 
     @PUT("event")
-    @FormUrlEncoded
     Call<Boolean> updateEvent(
-            @Field("id_event") String id_event,
-            @Field("day") String day,
-            @Field("month") String month,
-            @Field("year") String year,
-            @Field("title") String title,
-            @Field("deskripsi") String deskripsi,
-            @Field("link") String link
+            @Body EventModel eventModel
     );
 
     @POST("event/image")
     @Multipart
     Call<Boolean> updateEvent(
             @Part("id_event") RequestBody id_event,
+            @Part("id_pengguna") RequestBody id_pengguna,
+            @Part("image") RequestBody image,
             @Part MultipartBody.Part file
     );
 
-    @DELETE("event")
+    @POST("event/delete")
     @FormUrlEncoded
-    Call<Boolean> deleteEvent(@Field("id_event") String id_event);
+    Call<Boolean> deleteEvent(@Field("id_event") String id_event, @Field("image") String image);
 
     @GET("event")
     Call<List<EventModel>> getEvent();
@@ -200,24 +182,22 @@ public interface ApiInterface {
     );
 
     @PUT("lokasi")
-    @FormUrlEncoded
     Call<Boolean> updateLokasi(
-            @Field("id_lokasi") String id_lokasi,
-            @Field("nama") String nama,
-            @Field("ikan") String ikan,
-            @Field("deskripsi") String deskripsi
+            @Body LokasiModel lokasiModel
     );
 
     @POST("lokasi/image")
     @Multipart
     Call<Boolean> updateLokasi(
             @Part("id_lokasi") RequestBody id_lokasi,
+            @Part("id_pengguna") RequestBody id_pengguna,
+            @Part("image") RequestBody image,
             @Part MultipartBody.Part file
     );
 
-    @DELETE("lokasi")
+    @POST("lokasi/delete")
     @FormUrlEncoded
-    Call<Boolean> deleteLokasi(@Field("id_lokasi") String id_lokasi);
+    Call<Boolean> deleteLokasi(@Field("id_lokasi") String id_lokasi, @Field("image") String image);
 
     @GET("lokasi/{id_pengguna}")
     Call<List<LokasiModel>> getLokasi(
@@ -229,11 +209,8 @@ public interface ApiInterface {
 
     //COMMENT---------------------------------------------------------------------------------------------------------//
     @POST("comment")
-    @FormUrlEncoded
     Call<CommentModel> postComment(
-            @Field("id_pengguna") String id_pengguna,
-            @Field("ids") String ids,
-            @Field("comment") String comment
+            @Body CommentModel commentModel
     );
 
     @GET("comment/{ids}")
@@ -242,21 +219,15 @@ public interface ApiInterface {
     );
 
     @POST("comment/reply")
-    @FormUrlEncoded
     Call<CommentModel> postReply(
-            @Field("id_comment") String id_comment,
-            @Field("id_pengguna") String id_pengguna,
-            @Field("reply_to") String reply_to,
-            @Field("reply") String reply
+            @Body CommentModel commentModel
     );
 
-    @DELETE("comment")
-    @FormUrlEncoded
-    Call<Boolean> deleteComment(@Field("id_comment") String id_comment);
+    @DELETE("comment/{id_comment}")
+    Call<Boolean> deleteComment(@Path("id_comment") String id_comment);
 
-    @DELETE("comment/reply")
-    @FormUrlEncoded
-    Call<Boolean> deleteReply(@Field("id_reply") String id_reply);
+    @DELETE("comment/reply{id_reply}")
+    Call<Boolean> deleteReply(@Path("id_reply") String id_reply);
 
     @GET("comment/reply/{id_comment}")
     Call<List<CommentModel>> getReply(

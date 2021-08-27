@@ -30,7 +30,8 @@ public class DetailEventActivity extends AppCompatActivity {
     String id_event, img;
     PreferencesModel pref;
 
-    String day, month, year, key;
+    int day, month, year;
+    String key;
     boolean isShown, flag;
 
     @Override
@@ -80,15 +81,15 @@ public class DetailEventActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         id_event = bundle.getString("id_event");
         img = bundle.getString("img");
-        day = bundle.getString("day");
-        month = bundle.getString("month");
-        year = bundle.getString("year");
+        day = bundle.getInt("day");
+        month = bundle.getInt("month");
+        year = bundle.getInt("year");
         key = bundle.getString("key");
 
         txtTitle.setText(bundle.getString("title"));
-        txtDeskripsi.setText(bundle.getString("deskripsi"));
+        txtDeskripsi.setText("deskripsi : \n\n" + bundle.getString("deskripsi"));
         txtLink.setText(bundle.getString("link"));
-        txtDate.setText(day+"/"+month+"/"+year);
+        txtDate.setText("tanggal : " + day + "/" + month + "/" + year);
 
         Glide.with(this)
                 .load(img)

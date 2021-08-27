@@ -1,9 +1,11 @@
 package com.goldian.yourfishsingsite.View;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,12 +22,14 @@ import com.goldian.yourfishsingsite.R;
 public class DetailLokasiFragment extends Fragment {
 
     ImageView imgLokasi;
-    TextView txtLatitude, txtLongitude, txtNama, txtDeskripsi;
-    String id_lokasi, key, url;
+    TextView txtLatitude, txtLongitude, txtNama, txtDeskripsi, txtIkan;
+    String id_lokasi, key, url, ikan;
     ImageButton btnCommentDown, btnCommentUp;
     LinearLayout frame_container;
+    Button btnDestination;
 
     boolean isShown, flag;
+    float longitude, latitude;
 
     @Nullable
     @Override
@@ -43,21 +47,33 @@ public class DetailLokasiFragment extends Fragment {
         txtLatitude = v.findViewById(R.id.txtLatitude);
         txtLongitude = v.findViewById(R.id.txtLongitude);
         txtNama = v.findViewById(R.id.txtNama);
+        txtIkan = v.findViewById(R.id.txtIkan);
         txtDeskripsi = v.findViewById(R.id.txtDeskripsi);
         btnCommentUp = v.findViewById(R.id.btnCommentUp);
         btnCommentDown = v.findViewById(R.id.btnCommentDown);
+        btnDestination = v.findViewById(R.id.btnDestination);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setValue(){
         Bundle bundle = getArguments();
-        id_lokasi = bundle.getString("id_lokasi");
-        url = bundle.getString("img");
-        key = bundle.getString("key");
+        if (bundle != null) {
+            id_lokasi = bundle.getString("id_lokasi");
+            url = bundle.getString("img");
+            key = bundle.getString("key");
+            longitude = Float.parseFloat(bundle.getString("longitude"));
+            latitude = Float.parseFloat(bundle.getString("latitude"));
+            ikan = bundle.getString("ikan");
 
-        txtLatitude.setText(bundle.getString("latitude"));
-        txtLongitude.setText(bundle.getString("longitude"));
-        txtNama.setText(bundle.getString("nama"));
-        txtDeskripsi.setText(bundle.getString("deskripsi"));
+            txtLatitude.setText("lat    : " + bundle.getString("latitude"));
+            txtLongitude.setText("long : " + bundle.getString("longitude"));
+            txtNama.setText(bundle.getString("nama"));
+            if (ikan != null){
+                txtIkan.setText("ikan : " + ikan);
+                txtIkan.setVisibility(View.VISIBLE);
+            }
+            txtDeskripsi.setText("deskripsi : \n\n" + bundle.getString("deskripsi"));
+        }
 
         Glide.with(this)
                 .load(url)
@@ -80,17 +96,15 @@ public class DetailLokasiFragment extends Fragment {
         imgLokasi.setOnClickListener(onClick);
         btnCommentUp.setOnClickListener(onClick);
         btnCommentDown.setOnClickListener(onClick);
+        btnDestination.setOnClickListener(onClick);
     }
 
-    private boolean setContainer(boolean visibility){
-        if (visibility) {
+    private void setContainer(boolean visibility){
+        isShown = visibility;
+        if (visibility)
             frame_container.animate().translationY(0);
-            return true;
-        }
-        else {
+        else
             frame_container.animate().translationY(2000);
-            return false;
-        }
     }
 
     View.OnClickListener onClick = view -> {
@@ -100,16 +114,20 @@ public class DetailLokasiFragment extends Fragment {
             else
                 imgLokasi.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
+        else if (view == btnDestination){
+            ((MapLokasiFragment)getParentFragment()).requestRoute(longitude,latitude);
+        }
         else if (view == btnCommentUp || view == btnCommentDown){
             if (!flag) {
                 flag = true;
                 setFragment();
+                setContainer(false);
             }
 
             if (isShown)
-                isShown = setContainer(false);
+                setContainer(false);
             else
-                isShown = setContainer(true);
+                setContainer(true);
         }
     };
 }

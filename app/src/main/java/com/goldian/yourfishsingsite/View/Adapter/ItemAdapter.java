@@ -73,15 +73,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
 
     //----------------------------------------CODE---------------------------------------------------------------------------------------------
 
+    private String is20Character(String text){
+        if (text.length() > 20){
+            return text.toLowerCase().substring(0,17) + "...";
+        }
+        return text;
+    }
+
     @SuppressLint("SetTextI18n")
     void init (ItemHolder holder, final ItemModel currentData){
-        FilterModel filterModel = new FilterModel();
-        String nama, harga;
+        String nama, harga , tags;
 
-        if (currentData.getNama().length() > 20)
-            nama = currentData.getNama().toLowerCase().substring(0,17) + "...";
-        else
-            nama = currentData.getNama().toLowerCase();
+        nama = is20Character(currentData.getNama());
+        tags = is20Character(currentData.getJenis());
 
         if (type.equals("horizontal")){
             holder.strRate.setRating(currentData.getRating());
@@ -90,17 +94,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
             holder.txtDeskripsi.setText(currentData.getDeskripsi());
         }
 
-        harga = filterModel.setToRupiah(currentData.getHarga());
+        harga = currentData.getHargaInRupiah();
         holder.txtNama.setText(nama);
 
         holder.txtHarga.setText(harga);
-        holder.txtJenis.setText(currentData.getJenis());
+        holder.txtJenis.setText(tags);
         holder.btnCard.setOnClickListener(onClick(currentData, holder));
 
         Glide.with(context)
-                .load(currentData.getImg())
-                .signature(new ObjectKey(currentData.getImg_key()))
-                .into(holder.imgItem);
+            .load(currentData.getImg())
+            .signature(new ObjectKey(currentData.getImg_key()))
+            .into(holder.imgItem);
     }
 
     private Intent setExtras(Intent intent,final ItemModel currentData){

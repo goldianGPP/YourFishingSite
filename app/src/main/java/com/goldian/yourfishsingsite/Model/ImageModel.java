@@ -29,10 +29,10 @@ public class ImageModel {
 
     public String getBase_url() {
 //        main localhost
-//        private final String base_url = "http://192.168.100.27:8082/CodeIgniter/fishingsite/images/";
+        return "http://192.168.100.27:8082/CodeIgniter/fishingsite/";
 
 //        phone
-        return "http://192.168.43.146:8082/CodeIgniter/fishingsite/images/";
+//        return "http://192.168.43.146:8082/CodeIgniter/fishingsite/";
     }
 
     public RequestBody requestBody(String nama){

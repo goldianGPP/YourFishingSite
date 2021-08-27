@@ -63,13 +63,37 @@
                         android:textSize="15sp"
                         android:text="link : "/>
 
-                    <EditText
-                        android:id="@+id/txtItemLink"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:layout_marginBottom="20dp"
-                        android:hint="taruh/paste link nya disini" />
+                        android:layout_marginBottom="20dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/http"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            card_view:cardElevation="2dp"
+                            card_view:cardUseCompatPadding="true"
+                            app:cardCornerRadius="3dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textSize="20sp"
+                                android:textColor="@color/black"
+                                android:background="@color/grey"
+                                android:text="https://" />
+                        </androidx.cardview.widget.CardView>
+
+                        <EditText
+                            android:id="@+id/txtItemLink"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:hint="link"
+                            android:layout_toEndOf="@+id/http"/>
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -107,14 +131,14 @@
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="15sp"
-                        android:text="tag : "/>
+                        android:text="tag : ex~pisahkan dengan koma: a,b,c dst..."/>
 
                     <EditText
                         android:id="@+id/txtItemTag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:hint="tag: ex~pisahkan dengan koma: a,b,c dst..." />
+                        android:hint="tag" />
 
                     <TextView
                         android:layout_width="wrap_content"

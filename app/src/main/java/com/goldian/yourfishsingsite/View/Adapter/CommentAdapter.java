@@ -115,8 +115,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentHolder> implemen
 
     public void postReply(final CommentModel currentData, final CommentHolder holder){
         pref = new PreferencesModel(context, "login");
+        CommentModel commentModel = new CommentModel();
         commentController.postReply(
-                pref.read("id_pengguna"),
+                commentModel
+                        .setId_pengguna(pref.read("id_pengguna"))
+                        .setId_comment(currentData.getId_comment())
+                        .setReply_to(currentData.getId_pengguna())
+                        .setReply(holder.reply.getText().toString()),
                 currentData,
                 holder
         );

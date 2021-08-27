@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.EventController;
 import com.goldian.yourfishsingsite.Model.DialogModel;
+import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -121,9 +122,9 @@ public class UbahEventActivity extends AppCompatActivity {
     private void setValue(){
         Bundle bundle = getIntent().getExtras();
         id_event = bundle.getString("id_event");
-        day = Integer.parseInt(bundle.getString("day"));
-        month = Integer.parseInt(bundle.getString("month"));
-        year = Integer.parseInt(bundle.getString("year"));
+        day = bundle.getInt("day");
+        month = bundle.getInt("month");
+        year = bundle.getInt("year");
         img = bundle.getString("img");
 
         txtTitle.setText(bundle.getString("title"));
@@ -158,11 +159,15 @@ public class UbahEventActivity extends AppCompatActivity {
     public void updateImg(){
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_event = imageModel.requestBody(this.id_event);
+        RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
+        RequestBody cur_img = imageModel.requestBody(img.replace(new ImageModel().getBase_url(),""));
         MultipartBody.Part file = imageModel.multipartBody(uri,"image");
         dialogModel.show();
         isUpdate = false;
         eventController.updateEvent(
                 id_event,
+                id_pengguna,
+                cur_img,
                 file
         );
     }
@@ -171,14 +176,17 @@ public class UbahEventActivity extends AppCompatActivity {
     private void update(){
         dialogModel.show();
         isUpdate = true;
+        EventModel eventModel = new EventModel();
+
         eventController.updateEvent(
-                id_event,
-                day.toString(),
-                month.toString(),
-                year.toString(),
-                txtTitle.getText().toString(),
-                txtDeskripsi.getText().toString(),
-                txtLink.getText().toString()
+            eventModel
+                .setId_event(id_event)
+                .setDay(day.toString())
+                .setMonth(String.valueOf(month))
+                .setYear(year.toString())
+                .setTitle(txtTitle.getText().toString())
+                .setDeskripsi(txtDeskripsi.getText().toString())
+                .setLink(txtLink.getText().toString())
         );
     }
 
@@ -187,7 +195,8 @@ public class UbahEventActivity extends AppCompatActivity {
         dialogModel.show();
         isUpdate = true;
         eventController.deleteEvent(
-                id_event
+                id_event,
+                img.replace(new ImageModel().getBase_url(),"")
         );
     }
 
@@ -251,7 +260,7 @@ public class UbahEventActivity extends AppCompatActivity {
     OnDayClickListener onDate = eventDay -> {
         Calendar calendar = eventDay.getCalendar();
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
+        month = calendar.get(Calendar.MONTH)+1;
         year = calendar.get(Calendar.YEAR);
         txtDate.setText(day+"/"+month+"/"+year);
         datePicker.setVisibility(View.GONE);

@@ -22,6 +22,7 @@ import com.goldian.yourfishsingsite.Controller.ItemController;
 import com.goldian.yourfishsingsite.Model.DialogModel;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
+import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.Model.Validation;
@@ -39,7 +40,7 @@ public class UbahBarangActivity extends AppCompatActivity {
     ImageView imgItem;
     EditText txtItemLink, txtItemName, txtItemHarga, txtItemTag, txtItemDeskripsi;
     Button btnPost, btnGallery, btnDelete;
-    String id_item;
+    String id_item, img;
     Uri uri;
     Bitmap bitmap;
     ItemController itemController;
@@ -104,16 +105,17 @@ public class UbahBarangActivity extends AppCompatActivity {
     //initialize value
     private void setValue(){
         Bundle bundle = getIntent().getExtras();
+        id_item = bundle.getString("id_item");
+        img = bundle.getString("img");
+
         txtItemLink.setText(bundle.getString("url"));
         txtItemName.setText(bundle.getString("nama"));
         txtItemHarga.setText(bundle.getString("harga"));
         txtItemTag.setText(bundle.getString("jenis"));
         txtItemDeskripsi.setText(bundle.getString("deskripsi"));
-        id_item = bundle.getString("id_item");
-
 
         Glide.with(this)
-                .load(bundle.getString("img"))
+                .load(img)
                 .signature(new ObjectKey(bundle.getString("key")))
                 .into(imgItem);
         imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -137,11 +139,13 @@ public class UbahBarangActivity extends AppCompatActivity {
     public void updateImg(){
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_item = imageModel.requestBody(this.id_item);
+        RequestBody cur_img = imageModel.requestBody(img.replace(new ImageModel().getBase_url(),""));
         MultipartBody.Part file = imageModel.multipartBody(uri,"image");
         dialogModel.show();
         isUpdate = false;
         itemController.updateItem(
                 id_item,
+                cur_img,
                 file
         );
     }
@@ -150,13 +154,15 @@ public class UbahBarangActivity extends AppCompatActivity {
     private void update(){
         dialogModel.show();
         isUpdate = true;
+        ItemModel itemModel = new ItemModel();
         itemController.updateItem(
-                id_item,
-                txtItemName.getText().toString(),
-                txtItemTag.getText().toString(),
-                txtItemDeskripsi.getText().toString(),
-                txtItemHarga.getText().toString(),
-                txtItemLink.getText().toString()
+            itemModel
+                .setId_item(id_item)
+                .setNama(txtItemName.getText().toString())
+                .setJenis(txtItemTag.getText().toString())
+                .setDeskripsi(txtItemDeskripsi.getText().toString())
+                .setHarga(txtItemHarga.getText().toString())
+                .setWeb(txtItemLink.getText().toString())
         );
     }
 

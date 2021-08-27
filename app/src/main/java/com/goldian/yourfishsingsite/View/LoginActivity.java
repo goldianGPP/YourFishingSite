@@ -19,6 +19,7 @@ import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
+import com.sdsmdg.tastytoast.TastyToast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -67,10 +68,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void request(){
         dialog.show();
+        PenggunaModel penggunaModel = new PenggunaModel();
         new PenggunaController(this)
             .login(
-                    txtUsername.getText().toString(),
-                    txtPassword.getText().toString()
+                penggunaModel
+                    .setUsername(txtUsername.getText().toString())
+                    .setPassword(txtPassword.getText().toString())
             );
     }
 

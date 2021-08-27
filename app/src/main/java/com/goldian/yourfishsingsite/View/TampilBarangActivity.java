@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.goldian.yourfishsingsite.Controller.ItemController;
 import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
-import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.R;
 import com.goldian.yourfishsingsite.View.Adapter.ItemAdapter;
 
@@ -60,7 +59,7 @@ public class TampilBarangActivity extends AppCompatActivity {
         swipeRefresh.setRefreshing(true);
         if (getIntent().getExtras().getBoolean("flag")){
             itemController
-                .getItems(
+                .getMyItems(
                         pref.read("id_pengguna")
                 );
         }

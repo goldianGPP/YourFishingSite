@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
 import com.goldian.yourfishsingsite.Model.FilterModel;
+import com.goldian.yourfishsingsite.Model.PenggunaModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.Model.Validation;
 import com.goldian.yourfishsingsite.R;
@@ -53,15 +54,6 @@ public class RegisterActivity extends AppCompatActivity {
         txtLogin.setOnClickListener(onClick);
     }
 
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
-    }
-
     @SuppressWarnings("rawtypes")
     public void setIntent(Class intent){
         startActivity(new Intent(this, intent));
@@ -69,16 +61,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void request(){
         dialogModel.show();
+        PenggunaModel penggunaModel = new PenggunaModel();
         new PenggunaController(this)
             .register(
-                    txtEmail.getText().toString(),
-                    txtNama.getText().toString(),
-                    txtUsername.getText().toString(),
-                    txtPassword.getText().toString()
+                penggunaModel
+                    .setEmail(txtEmail.getText().toString())
+                    .setNama(txtNama.getText().toString())
+                    .setUsername(txtUsername.getText().toString())
+                    .setPassword(txtPassword.getText().toString())
             );
     }
 
-    public void result(boolean bool){
+    public void result(Boolean bool){
         if (bool){
             setIntent(LoginActivity.class);
             finish();

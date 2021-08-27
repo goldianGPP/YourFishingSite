@@ -28,7 +28,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/containerImg"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:layout_above="@+id/btnCommentUp"
+        android:paddingBottom="10dp">
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
@@ -51,38 +53,55 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="20dp"
                         android:textSize="20sp"
-                        android:hint="Latitude"/>
+                        android:hint="lat    : Latitude"/>
                     <TextView
                         android:id="@+id/txtLongitude"
+                        android:layout_below="@+id/txtLatitude"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:textSize="20sp"
-                        android:hint="Longitude"/>
-                </LinearLayout>
+                        android:hint="long : Longitude"/>
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnDestination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="  dapat jalur"
+                    android:textColor="@color/white"
+                    android:textAlignment="textStart"
+                    android:background="@color/blue"/>
 
                 <TextView
                     android:id="@+id/txtNama"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/faded_black"
+                    android:paddingStart="10dp"
                     android:textSize="20sp"
                     android:textColor="@color/black"
+                    android:textAlignment="center"
                     android:hint="Nama"/>
 
                 <TextView
-                    android:id="@+id/txt"
+                    android:id="@+id/txtIkan"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:paddingStart="10dp"
                     android:textSize="20sp"
-                    android:textColor="@color/black"
-                    android:hint="Ikan"/>
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/txtDeskripsi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
                     android:layout_marginBottom="20dp"
-                    android:textSize="20sp"
+                    android:textSize="15dp"
                     android:textColor="@color/black"
                     android:hint="Deskripsi"/>
 

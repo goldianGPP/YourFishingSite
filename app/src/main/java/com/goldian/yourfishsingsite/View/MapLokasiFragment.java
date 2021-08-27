@@ -3,27 +3,37 @@ package com.goldian.yourfishsingsite.View;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.goldian.yourfishsingsite.Controller.LokasiController;
+import com.goldian.yourfishsingsite.Controller.MapBoxController;
 import com.goldian.yourfishsingsite.Model.LokasiModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.R;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -37,10 +47,21 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolClickListener;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.mapbox.core.constants.Constants.PRECISION_6;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 
 public class MapLokasiFragment extends Fragment implements PermissionsListener, OnMapReadyCallback {
 
@@ -48,14 +69,30 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private SymbolManager symbolManager;
-//    private Symbol symbol;
+
+    //route
+    private static final String ROUTE_LAYER_ID = "route-layer-id";
+    private static final String ROUTE_SOURCE_ID = "route-source-id";
+    private static final String ICON_SOURCE_ID = "icon-source-id";
+    private Point origin;
+    private Point destination;
+    private Style style;
+
+    //    private Symbol symbol;
     private View v;
     private static final String MAKI_ICON_FISH_PIN = "fish-pin-1";
 
-    Button btnAdd;
+    FloatingActionButton btnAdd, btnDireksi;
+    FloatingActionsMenu floatingManu;
+    TextView txtJarak;
+    CardView card;
     PreferencesModel preferences;
     DrawerLayout drawerLayout;
     List<LokasiModel> lokasiModels;
+    MapBoxController boxController;
+
+    MapboxNavigation navigation;
+    DecimalFormat df = new DecimalFormat("#,##");
 
     @Nullable
     @Override
@@ -67,6 +104,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         mapView = v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+        navigation = new MapboxNavigation(getContext(),getString(R.string.access_token));
 
         return  v;
     }
@@ -100,12 +138,20 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     //initialize variable
     private void init(@NonNull Style style){
         btnAdd = v.findViewById(R.id.btnAdd);
+        btnDireksi = v.findViewById(R.id.btnDireksi);
+        floatingManu = v.findViewById(R.id.floatingManu);
+        floatingManu.expand();
+        txtJarak = v.findViewById(R.id.txtJarak);
         drawerLayout = v.findViewById(R.id.drawerLayout);
+        card = v.findViewById(R.id.card);
+
+        this.style = style;
         style.addImage(
                 MAKI_ICON_FISH_PIN,
                 BitmapFactory.decodeResource(this.getResources(), R.drawable.img_fish_pin)
         );
 
+        boxController = new MapBoxController(this);
         ImageView hoveringMarker = new ImageView(getContext());
         hoveringMarker.setImageResource(R.drawable.img_fish_pin);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -115,12 +161,38 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         mapView.addView(hoveringMarker);
 
         preferences = new PreferencesModel(getContext(),getResources().getString(R.string.login));
+
+    }
+
+    private void initSource() {
+        style.addSource(new GeoJsonSource(ROUTE_SOURCE_ID));
+
+        GeoJsonSource iconGeoJsonSource = new GeoJsonSource(ICON_SOURCE_ID, FeatureCollection.fromFeatures(new Feature[] {
+                Feature.fromGeometry(Point.fromLngLat(origin.longitude(), origin.latitude())),
+                Feature.fromGeometry(Point.fromLngLat(destination.longitude(), destination.latitude()))}));
+        style.addSource(iconGeoJsonSource);
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void initLayers() {
+        LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID);
+
+        // Add the LineLayer to the map. This layer will display the directions route.
+        routeLayer.setProperties(
+                lineCap(Property.LINE_CAP_ROUND),
+                lineJoin(Property.LINE_JOIN_ROUND),
+                lineWidth(5f),
+                lineColor(Color.parseColor("#000000"))
+        );
+        style.addLayer(routeLayer);
     }
 
     // setting the listener
     private void setListener(){
         btnAdd.setOnClickListener(onClick);
         btnAdd.setOnClickListener(onClick);
+        floatingManu.setOnClickListener(onClick);
+        btnDireksi.setOnClickListener(onClick);
         symbolManager.addClickListener(symbolClick);
     }
 
@@ -143,11 +215,39 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
                 .commit();
     }
 
+    //request or map data
     private void request(){
         new LokasiController(getContext(),this)
                 .getLokasi();
     }
 
+    //request for map direaction
+    private void requestDirection(){
+        boxController.getDirection(origin, destination, getString(R.string.access_token));
+    }
+
+    //request for map route
+    @SuppressLint({"RtlHardcoded", "LogNotTimber"})
+    public void requestRoute(Float Long, Float lat){
+        drawerLayout.closeDrawer(Gravity.LEFT);
+
+        LatLng current = new LatLng();
+        current.setLongitude(mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude());
+        current.setLatitude(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude());
+        origin = Point.fromLngLat(current.getLongitude(),current.getLatitude());
+        destination = Point.fromLngLat(Long, lat);
+
+        if (style.getSource(ROUTE_SOURCE_ID) != null){
+            style.removeLayer(ROUTE_LAYER_ID);
+            style.removeSource(ICON_SOURCE_ID);
+            style.removeSource(ROUTE_SOURCE_ID);
+        }
+        initSource();
+        initLayers();
+        boxController.getRoute(origin, destination, getString(R.string.access_token));
+    }
+
+    //result for map data
     public void result(List<LokasiModel> lokasiModels){
         if (lokasiModels!=null) {
             this.lokasiModels = lokasiModels;
@@ -159,10 +259,33 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         }
     }
 
+    //result for map route
+    @SuppressLint("SetTextI18n")
+    public void result(DirectionsResponse currentRoute){
+        double distance = currentRoute.routes().get(0).distance();
+        if (distance > 1000)
+            txtJarak.setText("jarak : " + df.format((distance/1000)) + "km");
+        else
+            txtJarak.setText("jarak : " + df.format(distance) + "m");
+        card.setVisibility(View.VISIBLE);
+
+        if (mapboxMap != null) {
+            mapboxMap.getStyle(style -> {
+                GeoJsonSource source = style.getSourceAs(ROUTE_SOURCE_ID);
+                if (source != null) {
+                    source.setGeoJson(LineString.fromPolyline(Objects.requireNonNull(currentRoute.routes().get(0).geometry()), PRECISION_6));
+                }
+            });
+        }
+
+        btnDireksi.setVisibility(View.VISIBLE);
+    }
+
     //Listener
     //-----------------
     @SuppressLint("RtlHardcoded")
     View.OnClickListener onClick = view -> {
+
         LatLng current = mapboxMap.getCameraPosition().target;
         if (view == btnAdd){
             Intent intent = new Intent(getContext(), TambahLokasiActivity.class);
@@ -170,17 +293,27 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
             intent.putExtra("longitude", Double.toString(current.getLongitude()));
             startActivityForResult(intent,1);
         }
+        else if (view == btnDireksi){
+            requestDirection();
+        }
+        else if (view == floatingManu){
+            if (floatingManu.isExpanded())
+                floatingManu.collapse();
+            else
+                floatingManu.expand();
+        }
     };
 
+    //symbol onclick
     @SuppressLint("RtlHardcoded")
     OnSymbolClickListener symbolClick = symbol -> {
-        LatLng current = mapboxMap.getCameraPosition().target;
+
         drawerLayout.openDrawer(Gravity.LEFT);
         Bundle bundle = new Bundle();
         Fragment fragment = new DetailLokasiFragment();
         LokasiModel lokasiModel = lokasiModels.get(Integer.parseInt(symbol.getTextAnchor()));
-        bundle.putString("latitude", Double.toString(current.getLatitude()));
-        bundle.putString("longitude", Double.toString(current.getLongitude()));
+        bundle.putString("latitude", Double.toString(lokasiModel.getLatitude()));
+        bundle.putString("longitude", Double.toString(lokasiModel.getLongitude()));
         bundle.putString("nama", lokasiModel.getNama());
         bundle.putString("ikan", lokasiModel.getIkan());
         bundle.putString("deskripsi", lokasiModel.getDeskripsi());
@@ -192,6 +325,26 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         return true;
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //SOMETHING FROM MAP / MAPBOX
 
     @Override
     @SuppressLint("ClickableViewAccessibility")
@@ -228,6 +381,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         }
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -257,18 +411,21 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+        navigation.onDestroy();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        navigation.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
+        navigation.onDestroy();
     }
 
     @Override

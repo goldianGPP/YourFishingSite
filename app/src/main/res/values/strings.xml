@@ -9,12 +9,12 @@
     <string name="login">login</string>
 
 <!--    toast-->
-    <string name="success">success</string>
-    <string name="failed">failed</string>
-    <string name="error">error</string>
-
-    <string-array name="calendar">
-        <item>event</item>
-        <item>remainder</item>
+    <string name="success">berhasil</string>
+    <string name="failed">gagal</string>
+    <string name="error">server error</string>
+<!--    login-->
+    <string-array name="tipe">
+        <item>rating</item>
+        <item>terbaru</item>
     </string-array>
 </resources>

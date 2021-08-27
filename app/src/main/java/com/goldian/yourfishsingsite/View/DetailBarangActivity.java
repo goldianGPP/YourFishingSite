@@ -119,12 +119,10 @@ public class DetailBarangActivity extends AppCompatActivity {
             key = bundle.getString("key");
 
             txtItemName.setText(bundle.getString("nama"));
-            txtItemHarga.setText(new FilterModel().setToRupiah(harga));
+            txtItemHarga.setText(new ItemModel().setHargaInRupiah(harga));
             ratingItem.setRating(bundle.getFloat("rating",0f));
             txtJenis.setText("tag : " + jenis);
             txtDescription.setText("deskripsi : \n\n" + deskripsi);
-
-            Log.i(TAG, "setValues: " + jenis.replace(", ", "-").replace(",","-"));
 
             Glide.with(this)
                     .load(bundle.getString("img"))
@@ -193,12 +191,14 @@ public class DetailBarangActivity extends AppCompatActivity {
 
     public void setRating(String rating){
         dialogModel.show();
+        ItemModel itemModel = new ItemModel();
         itemController
-                .setRating(
-                        id_item,
-                        pref.read("id_pengguna"),
-                        rating
-                );
+            .setRating(
+                itemModel
+                .setId_item(id_item)
+                .setId_pengguna(pref.read("id_pengguna")).
+                setRating(Float.parseFloat(rating))
+            );
     }
 
     private void request(){

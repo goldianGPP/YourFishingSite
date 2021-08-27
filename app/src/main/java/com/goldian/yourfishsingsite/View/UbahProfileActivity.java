@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
 import com.goldian.yourfishsingsite.Model.ImageModel;
+import com.goldian.yourfishsingsite.Model.PenggunaModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.Model.ProgressDialogModel;
 import com.goldian.yourfishsingsite.Model.Validation;
@@ -125,10 +126,12 @@ public class UbahProfileActivity extends AppCompatActivity {
     }
 
     private void updateUser(){
+        PenggunaModel penggunaModel = new PenggunaModel();
         new PenggunaController(this).updateUser(
-                pref.read("id_pengguna"),
-                txtNama.getText().toString(),
-                txtUsername.getText().toString()
+                penggunaModel
+                .setId_pengguna(pref.read("id_pengguna"))
+                .setNama(txtNama.getText().toString())
+                .setUsername(txtUsername.getText().toString())
         );
     }
 
