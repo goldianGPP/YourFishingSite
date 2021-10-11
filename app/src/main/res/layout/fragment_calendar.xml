@@ -20,26 +20,16 @@
                 app:headerColor="@color/blue"
                 app:todayLabelColor="@color/blue"/>
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
+            <TextView
+                android:id="@+id/txtDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/calemdarView"
-                android:background="@color/white"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:paddingStart="30dp"
-                android:paddingEnd="30dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/txtDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"/>
-            </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:background="@color/white"
+                android:layout_below="@+id/calemdarView"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -47,7 +37,7 @@
                 android:layout_marginBottom="40dp"
                 card_view:cardElevation="5dp"
                 card_view:cardUseCompatPadding="true"
-                android:layout_below="@+id/linearLayout">
+                android:layout_below="@+id/txtDate">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
@@ -73,23 +63,15 @@
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        card_view:cardElevation="2dp"
-        app:cardCornerRadius="25dp"
-        card_view:cardUseCompatPadding="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/btnAddEvent"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:textColor="@color/white"
-            android:text="ADD"
-            android:background="@drawable/button_blue"/>
-    </androidx.cardview.widget.CardView>
+        android:layout_alignParentBottom="true"
+        app:fab_colorNormal="@color/blue"
+        app:fab_title="tambah acara"
+        app:fab_icon="@drawable/img_add"
+        app:fab_size="normal"/>
 
 </RelativeLayout>

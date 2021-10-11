@@ -90,7 +90,7 @@ public class CommentController {
 
     //post reply
     public void postReply(CommentModel commentModel, final CommentModel currentData, final CommentHolder holder){
-        api.postReply(commentModel).enqueue(resListObject(currentData, holder));
+        api.postReply(commentModel).enqueue(resObject(currentData, holder));
     }
 
     //Delete
@@ -157,6 +157,31 @@ public class CommentController {
         return resObject;
     }
 
+    private Callback resObject(final CommentModel currentData, final CommentHolder holder){
+        Callback resListObject = new Callback<CommentModel>() {
+            @Override
+            public void onResponse(Call<CommentModel> call, Response<CommentModel> response) {
+                if (response.isSuccessful()){
+                    result(response.body(),holder,currentData);
+                }
+                else {
+                    result((CommentModel) null,holder,currentData);
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+                call.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<CommentModel> call, Throwable t) {
+                result((CommentModel) null,holder,currentData);
+                Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
+                call.cancel();
+            }
+        };
+
+        return resListObject;
+    }
+
     //LIST OF OBJECT RESULTS
     private Callback resListObject(){
         Callback resListObject = new Callback<List<CommentModel>>() {
@@ -184,22 +209,22 @@ public class CommentController {
     }
 
     private Callback resListObject(final CommentModel currentData, final CommentHolder holder){
-        Callback resListObject = new Callback<CommentModel>() {
+        Callback resListObject = new Callback<List<CommentModel>>() {
             @Override
-            public void onResponse(Call<CommentModel> call, Response<CommentModel> response) {
+            public void onResponse(Call<List<CommentModel>> call, Response<List<CommentModel>> response) {
                 if (response.isSuccessful()){
                     result(response.body(),holder,currentData);
                 }
                 else {
-                    result((CommentModel) null,holder,currentData);
+                    result((List<CommentModel>) null,holder,currentData);
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show();
                 }
                 call.cancel();
             }
 
             @Override
-            public void onFailure(Call<CommentModel> call, Throwable t) {
-                result((CommentModel) null,holder,currentData);
+            public void onFailure(Call<List<CommentModel>> call, Throwable t) {
+                result((List<CommentModel>) null,holder,currentData);
                 Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
                 call.cancel();
             }

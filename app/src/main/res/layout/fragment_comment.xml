@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/button_white"
+            android:background="@drawable/button_default"
             android:src="@drawable/img_send"/>
     </RelativeLayout>
 

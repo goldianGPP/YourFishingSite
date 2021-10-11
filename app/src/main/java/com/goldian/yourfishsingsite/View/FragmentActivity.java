@@ -12,13 +12,11 @@ import java.util.Objects;
 
 public class FragmentActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
-        drawerLayout = findViewById(R.id.drawerLayout);
         getExtras();
     }
 

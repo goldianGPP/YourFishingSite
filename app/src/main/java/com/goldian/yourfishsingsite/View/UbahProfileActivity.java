@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Controller.PenggunaController;
+import com.goldian.yourfishsingsite.Model.DialogModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PenggunaModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -36,8 +39,8 @@ import okhttp3.RequestBody;
 public class UbahProfileActivity extends AppCompatActivity {
 
 //    CircleImageView imgProfile;
-    Button btnImg, btnUpdate;
-    EditText txtUsername, txtNama;
+    Button btnImg, btnUpdate, btnPassword;
+    EditText txtUsername, txtNama, txtPassword;
     ImageModel imageModel;
     Uri uri;
     Bitmap bitmap;
@@ -48,7 +51,7 @@ public class UbahProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_edit);
+        setContentView(R.layout.activity_ubah_profile);
         init();
         setValue();
         setListener();
@@ -85,8 +88,10 @@ public class UbahProfileActivity extends AppCompatActivity {
         imageModel = new ImageModel(this);
         btnImg = findViewById(R.id.btnImg);
         btnUpdate = findViewById(R.id.btnUpdate);
+        btnPassword = findViewById(R.id.btnPassword);
         txtUsername = findViewById(R.id.txtUsername);
         txtNama = findViewById(R.id.txtNama);
+        txtPassword = findViewById(R.id.txtPassword);
     }
 
     private void setValue(){
@@ -104,15 +109,8 @@ public class UbahProfileActivity extends AppCompatActivity {
     private void setListener(){
         btnImg.setOnClickListener(onClick);
         btnUpdate.setOnClickListener(onClick);
-    }
-
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
+        btnPassword.setOnClickListener(onClick);
+        txtPassword.addTextChangedListener(watcher);
     }
 
     private void postImage(){
@@ -133,6 +131,10 @@ public class UbahProfileActivity extends AppCompatActivity {
                 .setNama(txtNama.getText().toString())
                 .setUsername(txtUsername.getText().toString())
         );
+    }
+
+    public void updatePassword(){
+
     }
 
     public void result(boolean bool){
@@ -163,8 +165,26 @@ public class UbahProfileActivity extends AppCompatActivity {
         else if (view == btnUpdate){
             if (validate())
                 updateUser();
-            else
-                Toast.makeText(this, "penuhi kebutuhan field", Toast.LENGTH_LONG);
         }
+        else if (view == btnPassword){
+            if (new Validation().isFieldOk(txtPassword,6,20).validate()) {
+                new DialogModel(this, R.layout.view_dialog)
+                        .defaultViewText();
+            }
+        }
+    };
+
+    TextWatcher watcher = new TextWatcher() {
+        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.toString().length()>0)
+                btnPassword.setVisibility(View.VISIBLE);
+            else
+                btnPassword.setVisibility(View.GONE);
+        }
+
+        @Override public void afterTextChanged(Editable editable) { }
     };
 }

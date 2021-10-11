@@ -6,10 +6,6 @@
             android:icon="@drawable/ic_action_line_mark"
             android:title="----------------BARANG----------------"/>
         <item
-            android:id="@+id/item_add"
-            android:icon="@drawable/ic_action_add"
-            android:title="tambah barang"/>
-        <item
             android:id="@+id/item_list"
             android:icon="@drawable/ic_action_list"
             android:title="list barang"/>

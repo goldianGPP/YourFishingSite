@@ -78,11 +78,11 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     private Point destination;
     private Style style;
 
-    //    private Symbol symbol;
+    //private Symbol symbol;
     private View v;
     private static final String MAKI_ICON_FISH_PIN = "fish-pin-1";
 
-    FloatingActionButton btnAdd, btnDireksi;
+    FloatingActionButton btnAdd, btnDireksi, btnBersih;
     FloatingActionsMenu floatingManu;
     TextView txtJarak;
     CardView card;
@@ -139,10 +139,12 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     private void init(@NonNull Style style){
         btnAdd = v.findViewById(R.id.btnAdd);
         btnDireksi = v.findViewById(R.id.btnDireksi);
+        btnBersih = v.findViewById(R.id.btnBersih);
         floatingManu = v.findViewById(R.id.floatingManu);
         floatingManu.expand();
         txtJarak = v.findViewById(R.id.txtJarak);
         drawerLayout = v.findViewById(R.id.drawerLayout);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         card = v.findViewById(R.id.card);
 
         this.style = style;
@@ -191,21 +193,27 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     private void setListener(){
         btnAdd.setOnClickListener(onClick);
         btnAdd.setOnClickListener(onClick);
-        floatingManu.setOnClickListener(onClick);
         btnDireksi.setOnClickListener(onClick);
+        btnBersih.setOnClickListener(onClick);
         symbolManager.addClickListener(symbolClick);
+        drawerLayout.addDrawerListener(drawer);
     }
 
     //setting symbol like pin for location
     public void setSymbol(LokasiModel lokasiModel, int i) {
+        String name = lokasiModel.getNama();
+        if (name.length() > 10)
+            name = name.substring(0,10) + "...";
+
         symbolManager.create(new SymbolOptions()
-            .withTextField(lokasiModel.getNama())
-            .withTextColor("#ffffff")
-            .withTextAnchor(String.valueOf(i))
-            .withLatLng(new LatLng(lokasiModel.getLatitude(), lokasiModel.getLongitude()))
-            .withIconImage(MAKI_ICON_FISH_PIN)
-            .withIconSize(1.0f)
-            .withDraggable(false)
+                .withTextField(name)
+                .withTextColor("#000000")
+                .withTextAnchor(String.valueOf(i))
+                .withIconOffset(new Float[] {0.0f, 40.0f})
+                .withLatLng(new LatLng(lokasiModel.getLatitude(), lokasiModel.getLongitude()))
+                .withIconImage(MAKI_ICON_FISH_PIN)
+                .withIconSize(1.0f)
+                .withDraggable(false)
         );
     }
 
@@ -213,6 +221,16 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container_map, fragment)
                 .commit();
+    }
+
+    private void clearLayers(){
+        if (style.getSource(ROUTE_SOURCE_ID) != null){
+            style.removeLayer(ROUTE_LAYER_ID);
+            style.removeSource(ICON_SOURCE_ID);
+            style.removeSource(ROUTE_SOURCE_ID);
+        }
+        btnBersih.setVisibility(View.GONE);
+        btnDireksi.setVisibility(View.GONE);
     }
 
     //request or map data
@@ -237,11 +255,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         origin = Point.fromLngLat(current.getLongitude(),current.getLatitude());
         destination = Point.fromLngLat(Long, lat);
 
-        if (style.getSource(ROUTE_SOURCE_ID) != null){
-            style.removeLayer(ROUTE_LAYER_ID);
-            style.removeSource(ICON_SOURCE_ID);
-            style.removeSource(ROUTE_SOURCE_ID);
-        }
+        clearLayers();
         initSource();
         initLayers();
         boxController.getRoute(origin, destination, getString(R.string.access_token));
@@ -257,6 +271,16 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
                 i++;
             }
         }
+    }
+
+    //result for get streetname
+    public void result(LatLng current, String jalan){
+        Intent intent = new Intent(getContext(), TambahLokasiActivity.class);
+
+        intent.putExtra("alamat", jalan);
+        intent.putExtra("latitude", Double.toString(current.getLatitude()));
+        intent.putExtra("longitude", Double.toString(current.getLongitude()));
+        startActivityForResult(intent,1);
     }
 
     //result for map route
@@ -278,6 +302,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
             });
         }
 
+        btnBersih.setVisibility(View.VISIBLE);
         btnDireksi.setVisibility(View.VISIBLE);
     }
 
@@ -288,19 +313,30 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
 
         LatLng current = mapboxMap.getCameraPosition().target;
         if (view == btnAdd){
-            Intent intent = new Intent(getContext(), TambahLokasiActivity.class);
-            intent.putExtra("latitude", Double.toString(current.getLatitude()));
-            intent.putExtra("longitude", Double.toString(current.getLongitude()));
-            startActivityForResult(intent,1);
+            boxController.getJalan(
+                    current,
+                    getString(R.string.access_token)
+            );
         }
         else if (view == btnDireksi){
             requestDirection();
         }
-        else if (view == floatingManu){
-            if (floatingManu.isExpanded())
-                floatingManu.collapse();
-            else
-                floatingManu.expand();
+        else if (view == btnBersih){
+            clearLayers();
+        }
+    };
+
+    DrawerLayout.SimpleDrawerListener drawer = new DrawerLayout.SimpleDrawerListener() {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            super.onDrawerOpened(drawerView);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            super.onDrawerClosed(drawerView);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     };
 
@@ -309,6 +345,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
     OnSymbolClickListener symbolClick = symbol -> {
 
         drawerLayout.openDrawer(Gravity.LEFT);
+
         Bundle bundle = new Bundle();
         Fragment fragment = new DetailLokasiFragment();
         LokasiModel lokasiModel = lokasiModels.get(Integer.parseInt(symbol.getTextAnchor()));
@@ -316,6 +353,7 @@ public class MapLokasiFragment extends Fragment implements PermissionsListener, 
         bundle.putString("longitude", Double.toString(lokasiModel.getLongitude()));
         bundle.putString("nama", lokasiModel.getNama());
         bundle.putString("ikan", lokasiModel.getIkan());
+        bundle.putString("alamat", lokasiModel.getAlamat());
         bundle.putString("deskripsi", lokasiModel.getDeskripsi());
         bundle.putString("id_lokasi", lokasiModel.getId_lokasi());
         bundle.putString("img", lokasiModel.getImg());

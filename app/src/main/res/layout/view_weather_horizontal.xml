@@ -13,6 +13,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/background"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:background="@drawable/button_black"

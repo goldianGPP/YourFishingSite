@@ -92,8 +92,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:paddingStart="10dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/txtAlamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:hint="Alamat"/>
 
                 <TextView
                     android:id="@+id/txtDeskripsi"
@@ -101,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="10dp"
                     android:layout_marginBottom="20dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:textColor="@color/black"
                     android:hint="Deskripsi"/>
 
@@ -117,7 +127,7 @@
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:src="@drawable/img_up"
-        android:background="@drawable/button_blue"/>
+        android:background="@drawable/button_primary"/>
 
     <LinearLayout
         android:id="@+id/frame_container"
@@ -130,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:src="@drawable/img_down"
-            android:background="@drawable/button_blue" />
+            android:background="@drawable/button_primary" />
         <RelativeLayout
             android:id="@+id/fragment_container_comment"
             android:layout_width="match_parent"

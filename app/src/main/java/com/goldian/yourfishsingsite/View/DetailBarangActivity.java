@@ -40,7 +40,8 @@ public class DetailBarangActivity extends AppCompatActivity {
     LinearLayout frame_container;
     ImageView imgItem;
     RatingBar ratingItem;
-    Button btnLink, btnUpdate;
+    Button btnUpdate;
+    ImageButton btnLink;
     TextView txtDescription, txtItemName, txtItemHarga, txtJenis;
     ImageButton btnCommentDown, btnCommentUp;
     RecyclerView recyclerView;
@@ -130,7 +131,10 @@ public class DetailBarangActivity extends AppCompatActivity {
                     .into(imgItem);
             imgItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            if (Objects.equals(bundle.getString("id_pengguna"), pref.read("id_pengguna")))
+//            if (Objects.equals(bundle.getString("id_pengguna"), pref.read("id_pengguna")))
+//                btnUpdate.setVisibility(View.VISIBLE);
+
+            if (bundle.getBoolean("update"))
                 btnUpdate.setVisibility(View.VISIBLE);
         }
         else

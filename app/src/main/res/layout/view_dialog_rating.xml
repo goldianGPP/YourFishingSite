@@ -64,14 +64,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10sp"
-                    android:background="@drawable/button_white"
+                    android:background="@drawable/button_default"
                     android:text="selesai" />
 
                 <Button
                     android:id="@+id/btnBatal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_white"
+                    android:background="@drawable/button_default"
                     android:layout_toEndOf="@+id/btnOk"
                     android:text="batal" />
             </RelativeLayout>

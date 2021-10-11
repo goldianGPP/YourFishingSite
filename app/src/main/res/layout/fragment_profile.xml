@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:text="edit profil"
                 android:textColor="@color/white"
-                android:background="@drawable/button_blue"/>
+                android:background="@drawable/button_primary"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

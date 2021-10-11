@@ -7,11 +7,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -37,27 +40,33 @@ import com.squareup.picasso.Picasso;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Objects;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import static android.content.ContentValues.TAG;
 
 public class UbahEventActivity extends AppCompatActivity {
     Button btnImg, btnAddEvent, btnDelete;
     ImageView imgEvent;
     ImageButton btnDate;
-    EditText txtTitle, txtDeskripsi, txtLink, txtDate;
+    EditText txtTitle, txtDeskripsi, txtLink;
+    TextView txtDate;
     ImageModel imageModel;
     ProgressDialogModel dialogModel;
     AlertDialog.Builder builder;
     EventController eventController;
     FilterModel filterModel;
     CalendarView datePicker;
+    NumberPicker pcrJam, pcrMenit;
 
     Uri uri;
     Bitmap bitmap;
     PreferencesModel pref;
+    Calendar calendar;
 
-    String id_event, img;
+    String id_event, img, tanggal;
     boolean isUpdate;
     Integer month, year, day;
 
@@ -110,6 +119,12 @@ public class UbahEventActivity extends AppCompatActivity {
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         txtLink = findViewById(R.id.txtLink);
         datePicker = findViewById(R.id.datePicker);
+        pcrJam = findViewById(R.id.pcrJam);
+        pcrJam.setMaxValue(23);
+        pcrJam.setMinValue(0);
+        pcrMenit = findViewById(R.id.pcrMenit);
+        pcrMenit.setMaxValue(59);
+        pcrMenit.setMinValue(0);
 
         btnImg.setText("ubah gambar");
         btnAddEvent.setText("ubah");
@@ -120,23 +135,28 @@ public class UbahEventActivity extends AppCompatActivity {
     //initialize value
     @SuppressLint("SetTextI18n")
     private void setValue(){
+        EventModel eventModel = new EventModel();
         Bundle bundle = getIntent().getExtras();
-        id_event = bundle.getString("id_event");
-        day = bundle.getInt("day");
-        month = bundle.getInt("month");
-        year = bundle.getInt("year");
-        img = bundle.getString("img");
+        if (bundle != null){
+            id_event = bundle.getString("id_event");
+            tanggal = bundle.getString("tanggal");
+            img = bundle.getString("img");
 
-        txtTitle.setText(bundle.getString("title"));
-        txtDeskripsi.setText(bundle.getString("deskripsi"));
-        txtLink.setText(bundle.getString("link"));
-        txtDate.setText(day+"/"+month+"/"+year);
+            txtTitle.setText(bundle.getString("title"));
+            txtDeskripsi.setText(bundle.getString("deskripsi"));
+            txtLink.setText(bundle.getString("link"));
+            calendar = eventModel.setCalendar(tanggal);
 
-        Glide.with(this)
-                .load(img)
-                .signature(new ObjectKey(bundle.getString("key")))
-                .into(imgEvent);
-        imgEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            pcrJam.setValue(calendar.get(Calendar.HOUR_OF_DAY));
+            pcrMenit.setValue(calendar.get(Calendar.MINUTE));
+            txtDate.setText(eventModel.setDateString(calendar));
+
+            Glide.with(this)
+                    .load(img)
+                    .signature(new ObjectKey(Objects.requireNonNull(bundle.getString("key"))))
+                    .into(imgEvent);
+            imgEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
     }
 
     //set listener
@@ -181,9 +201,7 @@ public class UbahEventActivity extends AppCompatActivity {
         eventController.updateEvent(
             eventModel
                 .setId_event(id_event)
-                .setDay(day.toString())
-                .setMonth(String.valueOf(month))
-                .setYear(year.toString())
+                .setTanggal(txtDate.getText().toString(), pcrJam.getValue(), pcrMenit.getValue())
                 .setTitle(txtTitle.getText().toString())
                 .setDeskripsi(txtDeskripsi.getText().toString())
                 .setLink(txtLink.getText().toString())
@@ -262,7 +280,7 @@ public class UbahEventActivity extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         month = calendar.get(Calendar.MONTH)+1;
         year = calendar.get(Calendar.YEAR);
-        txtDate.setText(day+"/"+month+"/"+year);
+        txtDate.setText(day+"-"+month+"-"+year);
         datePicker.setVisibility(View.GONE);
     };
 

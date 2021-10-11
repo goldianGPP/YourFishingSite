@@ -75,9 +75,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
 
     private String is20Character(String text){
         if (text.length() > 20){
-            return text.toLowerCase().substring(0,17) + "...";
+            return text.substring(0,17) + "...";
         }
-        return text;
+        return text.toLowerCase();
     }
 
     @SuppressLint("SetTextI18n")
@@ -128,10 +128,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> implements Fil
         return view -> {
             Intent intent = new Intent(context, DetailBarangActivity.class);
             intent = setExtras(intent, currentData);
-            if (context instanceof  TampilBarangActivity)
-                ((TampilBarangActivity)context).startActivityForResult(intent,1);
-            else
+            if (context instanceof  TampilBarangActivity) {
+                intent.putExtra("update", true);
+                ((TampilBarangActivity) context).startActivityForResult(intent, 1);
+            }
+            else {
+                intent.putExtra("update", false);
                 context.startActivity(intent);
+            }
         };
     }
 

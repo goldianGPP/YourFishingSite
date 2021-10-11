@@ -44,8 +44,18 @@
             android:layout_height="wrap_content"
             app:fab_labelStyle="@color/black"
             app:fab_labelsPosition="left"
+            app:fab_expandDirection="up"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnBersih"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:fab_title="bersihkan"
+                app:fab_icon="@drawable/img_clear"
+                app:fab_size="mini"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btnDireksi"
@@ -61,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_title="tambah lokasi"
-                app:fab_icon="@drawable/ic_action_add"
+                app:fab_icon="@drawable/img_add"
                 app:fab_size="mini"/>
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>

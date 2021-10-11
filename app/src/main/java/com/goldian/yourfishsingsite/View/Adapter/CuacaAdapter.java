@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,7 +49,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         return new WeatherHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull CuacaAdapter.WeatherHolder holder, int position) {
         final CuacaModel currentData = list.get(position);
@@ -60,6 +61,8 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
             holder.txtDay.setText("BESOK");
         else if (lusa == Integer.parseInt(temp))
             holder.txtDay.setText("LUSA");
+
+        holder.background.setBackground(context.getResources().getDrawable(setButton(Integer.parseInt(currentData.getDt_txt().substring(11,13)))));
 
         holder.imgWeather.setImageResource(setWeather(currentData.getMain()));
         holder.txtTime.setText(time);
@@ -75,6 +78,12 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         if (time >= 6 && time < 12) return R.drawable.gradient_moring;
         else if (time >= 12 && time < 18) return R.drawable.gradient_evening;
         else return R.drawable.gradient_night;
+    }
+
+    private int setButton(int time){
+        if (time >= 6 && time < 12) return R.drawable.button_primary;
+        else if (time >= 12 && time < 18) return R.drawable.button_warning;
+        else return R.drawable.button_secondary;
     }
 
     private int setLighter(int time){
@@ -97,6 +106,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         lighter = setLighter(time);
         weather = setWeather(currentData.getMain().trim());
 
+
         Objects.requireNonNull(((FragmentActivity) context).getSupportActionBar()).setBackgroundDrawable(context.getResources().getDrawable(template));
 
         fragment.setValue(
@@ -111,6 +121,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
         protected CardView btnCard;
         protected ImageView imgWeather;
         protected TextView txtDay, txtTime, txtWeather;
+        protected LinearLayout background;
 
         public WeatherHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +130,7 @@ public class CuacaAdapter extends RecyclerView.Adapter<CuacaAdapter.WeatherHolde
             txtDay = itemView.findViewById(R.id.txtDay);
             txtTime = itemView.findViewById(R.id.txtTime);
             txtWeather = itemView.findViewById(R.id.txtWeather);
+            background = itemView.findViewById(R.id.background);
         }
     }
 

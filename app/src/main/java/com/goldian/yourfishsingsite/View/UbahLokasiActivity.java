@@ -39,7 +39,7 @@ import okhttp3.RequestBody;
 public class UbahLokasiActivity extends AppCompatActivity {
 
     ImageView imgLokasi;
-    TextView txtLatitude, txtLongitude;
+    TextView txtLatitude, txtLongitude, txtAlamat;
     EditText txtNama, txtDeskripsi, txtIkan;
     PreferencesModel pref;
     Button btnMap, btnImg, btnDelete;
@@ -93,6 +93,7 @@ public class UbahLokasiActivity extends AppCompatActivity {
         txtLongitude = findViewById(R.id.txtLongitude);
         txtNama = findViewById(R.id.txtNama);
         txtIkan = findViewById(R.id.txtIkan);
+        txtAlamat = findViewById(R.id.txtAlamat);
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         btnMap = findViewById(R.id.btnMap);
         imgLokasi = findViewById(R.id.imgMap);
@@ -115,6 +116,7 @@ public class UbahLokasiActivity extends AppCompatActivity {
         txtNama.setText(bundle.getString("nama"));
         txtIkan.setText(bundle.getString("ikan"));
         txtDeskripsi.setText(bundle.getString("deskripsi"));
+        txtAlamat.setText(bundle.getString("alamat"));
 
         Glide.with(this)
                 .load(img)

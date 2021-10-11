@@ -41,7 +41,7 @@
                 android:id="@+id/btnSideMenu"
                 android:layout_width="22dp"
                 android:layout_height="18dp"
-                android:background="@drawable/button_blue"
+                android:background="@drawable/button_primary"
                 android:scaleType="fitXY"
                 android:src="@drawable/img_menu"
                 android:layout_centerVertical="true"
@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:text="edit profil"
                     android:textColor="@color/white"
-                    android:background="@drawable/button_blue"/>
+                    android:background="@drawable/button_primary"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -132,19 +132,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <GridLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="80dp"
-                        android:paddingBottom="80dp"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
                         android:layout_centerInParent="true"
                         android:useDefaultMargins="true"
-                        android:columnCount="1">
+                        android:columnCount="2">
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="50dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginEnd="20dp"
                             app:cardCornerRadius="20dp"
                             card_view:cardElevation="2dp"
                             card_view:cardUseCompatPadding="true">
@@ -153,7 +152,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/white"
-                                android:background="@drawable/button_blue"
+                                android:background="@drawable/button_primary"
                                 android:orientation="vertical"
                                 android:gravity="center">
                                 <de.hdodenhof.circleimageview.CircleImageView
@@ -175,10 +174,8 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="50dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             app:cardCornerRadius="20dp"
                             card_view:cardElevation="2dp"
                             card_view:cardUseCompatPadding="true">
@@ -187,7 +184,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/white"
-                                android:background="@drawable/button_blue"
+                                android:background="@drawable/button_primary"
                                 android:orientation="vertical"
                                 android:gravity="center">
                                 <de.hdodenhof.circleimageview.CircleImageView
@@ -209,10 +206,8 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="50dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             app:cardCornerRadius="20dp"
                             card_view:cardElevation="2dp"
                             card_view:cardUseCompatPadding="true">
@@ -221,7 +216,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/white"
-                                android:background="@drawable/button_blue"
+                                android:background="@drawable/button_primary"
                                 android:orientation="vertical"
                                 android:gravity="center">
                                 <de.hdodenhof.circleimageview.CircleImageView
@@ -243,10 +238,8 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="50dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             app:cardCornerRadius="20dp"
                             card_view:cardElevation="2dp"
                             card_view:cardUseCompatPadding="true">
@@ -255,7 +248,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/white"
-                                android:background="@drawable/button_blue"
+                                android:background="@drawable/button_primary"
                                 android:orientation="vertical"
                                 android:gravity="center">
                                 <de.hdodenhof.circleimageview.CircleImageView

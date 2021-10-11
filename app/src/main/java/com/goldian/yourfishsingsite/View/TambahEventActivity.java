@@ -12,6 +12,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.goldian.yourfishsingsite.Controller.EventController;
+import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.FilterModel;
 import com.goldian.yourfishsingsite.Model.ImageModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -38,11 +41,13 @@ public class TambahEventActivity extends AppCompatActivity {
     Button btnImg, btnAddEvent;
     ImageView imgEvent;
     ImageButton btnDate;
-    EditText txtTitle, txtDeskripsi, txtLink, txtDate;
+    EditText txtTitle, txtDeskripsi, txtLink;
+    TextView txtDate;
     ImageModel imageModel;
     ProgressDialogModel dialogModel;
     FilterModel filterModel;
     CalendarView datePicker;
+    NumberPicker pcrJam, pcrMenit;
 
     Uri uri;
     Bitmap bitmap;
@@ -92,6 +97,12 @@ public class TambahEventActivity extends AppCompatActivity {
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         txtLink = findViewById(R.id.txtLink);
         datePicker = findViewById(R.id.datePicker);
+        pcrJam = findViewById(R.id.pcrJam);
+        pcrJam.setMaxValue(23);
+        pcrJam.setMinValue(0);
+        pcrMenit = findViewById(R.id.pcrMenit);
+        pcrMenit.setMaxValue(59);
+        pcrMenit.setMinValue(0);
     }
 
     private void setListener(){
@@ -105,9 +116,7 @@ public class TambahEventActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
         RequestBody title = imageModel.requestBody(txtTitle.getText().toString());
-        RequestBody day = imageModel.requestBody(this.day.toString());
-        RequestBody month = imageModel.requestBody(this.month.toString());
-        RequestBody year = imageModel.requestBody(this.year.toString());
+        RequestBody tanggal = imageModel.requestBody(new EventModel().setTanggal(txtDate.getText().toString(), pcrJam.getValue(), pcrMenit.getValue()).getTanggal());
         RequestBody link = imageModel.requestBody(txtLink.getText().toString());
         RequestBody deskripsi = imageModel.requestBody(txtDeskripsi.getText().toString());
         MultipartBody.Part file = imageModel.multipartBody(uri,"image");
@@ -117,9 +126,7 @@ public class TambahEventActivity extends AppCompatActivity {
                 .postEvent(
                         id_pengguna,
                         title,
-                        day,
-                        month,
-                        year,
+                        tanggal,
                         link,
                         deskripsi,
                         file
@@ -176,7 +183,7 @@ public class TambahEventActivity extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         month = calendar.get(Calendar.MONTH)+1;
         year = calendar.get(Calendar.YEAR);
-        txtDate.setText(day+"/"+month+"/"+year);
+        txtDate.setText(day+"-"+month+"-"+year);
         datePicker.setVisibility(View.GONE);
     };
 }

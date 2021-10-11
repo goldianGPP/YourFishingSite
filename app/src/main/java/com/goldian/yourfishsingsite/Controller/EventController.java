@@ -76,13 +76,11 @@ public class EventController {
     //Post
     //-------------------------------------------------------------------------------
     //post event
-    public void postEvent(RequestBody id_pengguna, RequestBody title, RequestBody day, RequestBody month, RequestBody year, RequestBody link, RequestBody deskripsi, MultipartBody.Part file){
+    public void postEvent(RequestBody id_pengguna, RequestBody title, RequestBody tanggal, RequestBody link, RequestBody deskripsi, MultipartBody.Part file){
         api.postEvent(
                 id_pengguna,
                 title,
-                day,
-                month,
-                year,
+                tanggal,
                 link,
                 deskripsi,
                 file

@@ -2,6 +2,7 @@ package com.goldian.yourfishsingsite.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.goldian.yourfishsingsite.Controller.ItemController;
 import com.goldian.yourfishsingsite.Model.ItemModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -24,6 +26,7 @@ public class TampilBarangActivity extends AppCompatActivity {
     PreferencesModel pref;
     ItemController itemController;
     SwipeRefreshLayout swipeRefresh;
+    FloatingActionButton btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class TampilBarangActivity extends AppCompatActivity {
         pref = new PreferencesModel(this,"login");
         itemController = new ItemController(this);
 
+        btnAdd = findViewById(R.id.btnAdd);
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
@@ -53,6 +57,8 @@ public class TampilBarangActivity extends AppCompatActivity {
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(this::request);
+
+        btnAdd.setOnClickListener(view -> startActivityForResult(new Intent(TampilBarangActivity.this, TambahBarangActivity.class), 1));
     }
 
     private void request(){

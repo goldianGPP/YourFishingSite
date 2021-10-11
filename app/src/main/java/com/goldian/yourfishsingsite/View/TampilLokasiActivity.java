@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.goldian.yourfishsingsite.Controller.EventController;
 import com.goldian.yourfishsingsite.Controller.LokasiController;
 import com.goldian.yourfishsingsite.Model.EventModel;
@@ -27,6 +28,7 @@ public class TampilLokasiActivity extends AppCompatActivity {
     LokasiAdapter lokasiAdapter;
     PreferencesModel pref;
     SwipeRefreshLayout swipeRefresh;
+    FloatingActionButton btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class TampilLokasiActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Tampil Lokasi");
         pref = new PreferencesModel(this,"login");
 
+        btnAdd = findViewById(R.id.btnAdd);
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
@@ -55,6 +58,12 @@ public class TampilLokasiActivity extends AppCompatActivity {
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(this::request);
+
+        btnAdd.setOnClickListener(view -> {
+            Intent intent = new Intent(TampilLokasiActivity.this, TambahEventActivity.class);
+            intent.putExtra("identity",4);
+            startActivityForResult(intent, 1);
+        });
     }
 
     private void request(){

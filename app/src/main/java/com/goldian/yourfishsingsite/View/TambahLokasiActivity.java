@@ -38,8 +38,8 @@ public class TambahLokasiActivity extends AppCompatActivity {
     FilterModel filterModel;
 
     ImageView imgMap;
-    TextView txtLatitude, txtLongitude;
-    EditText txtNama, txtDeskripsi;
+    TextView txtLatitude, txtLongitude, txtAlamat;
+    EditText txtNama, txtDeskripsi, txtIkan;
     Button btnMap, btnImg;
 
 
@@ -81,6 +81,8 @@ public class TambahLokasiActivity extends AppCompatActivity {
         txtLatitude = findViewById(R.id.txtLatitude);
         txtLongitude = findViewById(R.id.txtLongitude);
         txtNama = findViewById(R.id.txtNama);
+        txtIkan = findViewById(R.id.txtIkan);
+        txtAlamat = findViewById(R.id.txtAlamat);
         txtDeskripsi = findViewById(R.id.txtDeskripsi);
         btnMap = findViewById(R.id.btnMap);
     }
@@ -89,6 +91,7 @@ public class TambahLokasiActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         txtLatitude.setText(bundle.getString("latitude"));
         txtLongitude.setText(bundle.getString("longitude"));
+        txtAlamat.setText(bundle.getString("alamat"));
     }
 
     private void setListener(){
@@ -96,20 +99,13 @@ public class TambahLokasiActivity extends AppCompatActivity {
         btnImg.setOnClickListener(onClick);
     }
 
-    private boolean isFieldEmpty(EditText editText){
-        if (editText.getText().toString().equals("")) {
-            editText.setError("isi");
-            return false;
-        }
-        else
-            return true;
-    }
-
     private void request(){
         dialogModel.show();
         ImageModel imageModel = new ImageModel(this);
         RequestBody id_pengguna = imageModel.requestBody(pref.read("id_pengguna"));
         RequestBody nama = imageModel.requestBody(txtNama.getText().toString());
+        RequestBody ikan = imageModel.requestBody(txtIkan.getText().toString());
+        RequestBody alamat = imageModel.requestBody(txtAlamat.getText().toString());
         RequestBody deskripsi = imageModel.requestBody(txtDeskripsi.getText().toString());
         RequestBody status = imageModel.requestBody(txtDeskripsi.getText().toString());
         RequestBody latitude = imageModel.requestBody(txtLatitude.getText().toString());
@@ -120,6 +116,8 @@ public class TambahLokasiActivity extends AppCompatActivity {
                 .postLokasi(
                         id_pengguna,
                         nama,
+                        ikan,
+                        alamat,
                         deskripsi,
                         status,
                         latitude,

@@ -1,17 +1,19 @@
 package com.goldian.yourfishsingsite.Model;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 
 import com.applandeo.materialcalendarview.EventDay;
 import com.goldian.yourfishsingsite.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class EventModel {
     String id_event, id_pengguna, title, link, deskripsi, img, created_at, edited_at , img_key;
-    String day;
-    String month;
-    String year;
+    String tanggal;
     EventDay eventDay;
     Calendar calendar;
 
@@ -96,30 +98,17 @@ public class EventModel {
         return this;
     }
 
-    public int getDay() {
-        return Integer.parseInt(day);
+    public String getTanggal() {
+        return tanggal;
     }
 
-    public EventModel setDay(String day) {
-        this.day = day;
+    public EventModel setTanggal(Calendar calendar, int h, int m){
+        this.tanggal =  setDateString(calendar) + " " + h + "." + m + ".00";
         return this;
     }
 
-    public int getMonth() {
-        return Integer.parseInt(month);
-    }
-
-    public EventModel setMonth(String month) {
-        this.month = month;
-        return this;
-    }
-
-    public int getYear() {
-        return Integer.parseInt(year);
-    }
-
-    public EventModel setYear(String year) {
-        this.year = year;
+    public EventModel setTanggal(String tanggal, int h, int m) {
+        this.tanggal = tanggal  + " " + h + "." + m + ".00";
         return this;
     }
 
@@ -136,14 +125,36 @@ public class EventModel {
         return calendar;
     }
 
-    public void setCalendar(EventModel eventModel) {
-        calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.set(Calendar.MONTH, eventModel.getMonth()-1);
-        calendar.set(Calendar.DAY_OF_MONTH, eventModel.getDay());
-        calendar.set(Calendar.YEAR, eventModel.getYear());
+    public String setDateString(Calendar calendar){
+        return calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR);
+    }
+
+    public String setDateTimeString(Calendar calendar){
+        return calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public void setCalendar() {
+        try {
+            calendar = Calendar.getInstance();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            calendar.setTime(format.parse(getTanggal()));
+            calendar.add(Calendar.HOUR_OF_DAY, 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public Calendar setCalendar(String date) {
+        try {
+            calendar = Calendar.getInstance();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            calendar.setTime(format.parse(date));
+            calendar.add(Calendar.HOUR_OF_DAY, 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar;
     }
 }

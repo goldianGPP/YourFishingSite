@@ -16,9 +16,12 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
+import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
 import com.goldian.yourfishsingsite.R;
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
 
 public class DetailEventActivity extends AppCompatActivity {
 
@@ -30,8 +33,7 @@ public class DetailEventActivity extends AppCompatActivity {
     String id_event, img;
     PreferencesModel pref;
 
-    int day, month, year;
-    String key;
+    String key, tanggal, deskripsi;
     boolean isShown, flag;
 
     @Override
@@ -78,18 +80,19 @@ public class DetailEventActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setValue(){
+        EventModel eventModel = new EventModel();
         Bundle bundle = getIntent().getExtras();
         id_event = bundle.getString("id_event");
         img = bundle.getString("img");
-        day = bundle.getInt("day");
-        month = bundle.getInt("month");
-        year = bundle.getInt("year");
+        tanggal = bundle.getString("tanggal");
         key = bundle.getString("key");
+        deskripsi = bundle.getString("deskripsi");
 
         txtTitle.setText(bundle.getString("title"));
-        txtDeskripsi.setText("deskripsi : \n\n" + bundle.getString("deskripsi"));
+        txtDeskripsi.setText("deskripsi : \n\n" + deskripsi);
         txtLink.setText(bundle.getString("link"));
-        txtDate.setText("tanggal : " + day + "/" + month + "/" + year);
+
+        txtDate.setText("tanggal : " + eventModel.setDateTimeString(eventModel.setCalendar(tanggal)));
 
         Glide.with(this)
                 .load(img)
@@ -97,22 +100,23 @@ public class DetailEventActivity extends AppCompatActivity {
                 .into(imgEvent);
         imgEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        if (bundle.getString("id_pengguna").equals(pref.read("id_pengguna")))
-            btnUpdate.setVisibility(View.VISIBLE);
-
         if (!txtLink.getText().toString().equals(""))
             container.setVisibility(View.VISIBLE);
+
+//        if (bundle.getString("id_pengguna").equals(pref.read("id_pengguna")))
+//            btnUpdate.setVisibility(View.VISIBLE);
+
+        if (bundle.getBoolean("update"))
+            btnUpdate.setVisibility(View.VISIBLE);
     }
 
     private Intent setExtras(Intent intent){
         intent.putExtra("id_event",id_event);
         intent.putExtra("img",img);
         intent.putExtra("title",txtTitle.getText().toString());
-        intent.putExtra("deskripsi",txtDeskripsi.getText().toString());
+        intent.putExtra("deskripsi",deskripsi);
         intent.putExtra("link",txtLink.getText().toString());
-        intent.putExtra("day",day);
-        intent.putExtra("month",month);
-        intent.putExtra("year",year);
+        intent.putExtra("tanggal",tanggal);
         intent.putExtra("key",key);
 
         return intent;

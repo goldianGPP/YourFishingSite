@@ -22,6 +22,7 @@ import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.goldian.yourfishsingsite.Controller.EventController;
 import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -43,8 +44,7 @@ public class CalendarFragment extends Fragment {
     List<EventDay> events = new ArrayList<>();
     List<EventModel> eventModels = new ArrayList<>();
     DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
-    CardView cardView;
-    Button btnAddEvent;
+    FloatingActionButton btnAddEvent;
     Calendar calendar;
     TextView txtDate;
     Integer month, year, day;
@@ -75,7 +75,6 @@ public class CalendarFragment extends Fragment {
         pref = new PreferencesModel(getContext(), "login");
         calemdarView = v.findViewById(R.id.calemdarView);
         txtDate = v.findViewById(R.id.txtDate);
-        cardView = v.findViewById(R.id.cardView);
         btnAddEvent = v.findViewById(R.id.btnAddEvent);
         recyclerView = v.findViewById(R.id.recyclerView);
         notFound = v.findViewById(R.id.notFound);
@@ -92,7 +91,7 @@ public class CalendarFragment extends Fragment {
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        txtDate.setText(day + " " + dateFormatSymbols.getMonths()[month] + " " + year);
+        txtDate.setText(day + "-" + dateFormatSymbols.getMonths()[month] + "-" + year);
     }
 
     private void setListener(){
@@ -105,7 +104,7 @@ public class CalendarFragment extends Fragment {
     private void setEvents(){
         Calendar temp = Calendar.getInstance();
         for (EventModel eventModel: eventModels) {
-            eventModel.setCalendar(eventModel);
+            eventModel.setCalendar();
             if (eventModel.getCalendar().before(temp))
                 eventModel.setEventDay(new EventDay(eventModel.getCalendar(),R.drawable.img_baloon_uncolored));
             else
@@ -140,7 +139,6 @@ public class CalendarFragment extends Fragment {
     OnCalendarPageChangeListener onPage = () -> setDateText(calendar);
 
     OnDayClickListener onChange = eventDay -> {
-        cardView.setVisibility(View.VISIBLE);
         calendar = (eventDay.getCalendar());
         setDateText(calendar);
         List<EventModel> temp = new ArrayList<>();

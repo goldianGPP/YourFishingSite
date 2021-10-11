@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.goldian.yourfishsingsite.Model.CommentModel;
 import com.goldian.yourfishsingsite.Model.Holder.CommentHolder;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -53,15 +55,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<CommentHolder> {
             holder.replyto.setText("to : " + currentData.getReplier());
         else
             holder.replyto.setText("to : " + this.currentCommentData.getUsername());
+
         if (currentData.getUsername() != null) {
             holder.username.setText(currentData.getUsername());
-            String url = context.getResources().getString(R.string.img_url_user) + currentData.getReply_to() + ".jpg";
-            Picasso.get().load(url).into(holder.imgProfile);
+            String url = context.getResources().getString(R.string.img_url_user) + currentData.getId_pengguna() + ".jpg";
+            Glide.with(context)
+                    .load(url)
+                    .into(holder.imgProfile);
         }
         else {
             holder.username.setText(pref.read("username"));
             String url = context.getResources().getString(R.string.img_url_user) + pref.read("id_pengguna") + ".jpg";
-            Picasso.get().load(url).into(holder.imgProfile);
+            Glide.with(context)
+                    .load(url)
+                    .into(holder.imgProfile);
         }
         holder.comment.setText(currentData.getReply());
         holder.btnReply.setOnClickListener(onClick(currentData,holder));

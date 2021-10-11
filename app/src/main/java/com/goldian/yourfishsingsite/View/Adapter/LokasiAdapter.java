@@ -65,6 +65,7 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.LokasiHold
         intent.putExtra("latitude", currentData.getLatitude());
         intent.putExtra("longitude", currentData.getLongitude());
         intent.putExtra("ikan", currentData.getIkan());
+        intent.putExtra("alamat", currentData.getAlamat());
         intent.putExtra("deskripsi", currentData.getDeskripsi());
         intent.putExtra("img", url);
         intent.putExtra("key", currentData.getImg_key());

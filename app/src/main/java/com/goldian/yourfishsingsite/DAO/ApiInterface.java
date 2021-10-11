@@ -134,9 +134,7 @@ public interface ApiInterface {
     Call<Boolean> postEvent(
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("title") RequestBody title,
-            @Part("day") RequestBody day,
-            @Part("month") RequestBody month,
-            @Part("year") RequestBody year,
+            @Part("tanggal") RequestBody tanggal,
             @Part("link") RequestBody link,
             @Part("deskripsi") RequestBody deskripsi,
             @Part MultipartBody.Part file
@@ -174,6 +172,8 @@ public interface ApiInterface {
     Call<Boolean> postLokasi(
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("nama") RequestBody nama,
+            @Part("ikan") RequestBody ikan,
+            @Part("alamat") RequestBody alamat,
             @Part("deskripsi") RequestBody deskripsi,
             @Part("status") RequestBody status,
             @Part("latitude") RequestBody latitude,

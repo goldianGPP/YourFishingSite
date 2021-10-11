@@ -14,7 +14,8 @@
     <color name="deep_blue">#0048FF</color>
     <color name="faded_blue">#460384F4</color>
     <color name="orange">#FDAA1A</color>
-    <color name="red">#ff0000</color>
+    <color name="red">#FF1313</color>
+    <color name="dark_red">#A60000</color>
     <color name="pink">#ff66e5</color>
     <color name="red_pink">#f0055f</color>
     <color name="grey">#9e9fa3</color>

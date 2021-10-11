@@ -1,6 +1,8 @@
 package com.goldian.yourfishsingsite.Controller;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -11,7 +13,12 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
@@ -23,6 +30,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.ContentValues.TAG;
+
 public class MapBoxController {
 
     MapLokasiFragment fragment;
@@ -33,6 +42,9 @@ public class MapBoxController {
 
     private void result(DirectionsResponse currentRoute){
         fragment.result(currentRoute);
+    }
+    private void result(LatLng current, String jalan){
+        fragment.result(current, jalan);
     }
 
     //get route
@@ -67,8 +79,8 @@ public class MapBoxController {
     public void getDirection(Point origin, Point destination, String token){
         NavigationRoute.builder(fragment.getContext())
                 .accessToken(token)
-                .origin(destination)
-                .destination(origin)
+                .origin(origin)
+                .destination(destination)
                 .build()
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
@@ -91,6 +103,34 @@ public class MapBoxController {
                     @Override
                     public void onFailure(@NonNull Call<DirectionsResponse> call, @NonNull Throwable t) {
 
+                    }
+                });
+    }
+
+
+
+    public void getJalan(LatLng current, String token){
+        MapboxGeocoding.builder()
+                .accessToken(token)
+                .query(Point.fromLngLat(current.getLongitude(), current.getLatitude()))
+                .geocodingTypes(
+                        GeocodingCriteria.TYPE_NEIGHBORHOOD
+                )
+                .build()
+                .enqueueCall(new Callback<GeocodingResponse>() {
+                    @Override
+                    public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+                        if (response.body().features().size() > 0){
+                            CarmenFeature feature = response.body().features().get(0);
+                            result(current, feature.placeName());
+                        }
+                        else
+                            TastyToast.makeText(fragment.getContext(), "rute tidak ditemukan", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                    }
+
+                    @Override
+                    public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+                        TastyToast.makeText(fragment.getContext(), fragment.getContext().getResources().getString(R.string.error), TastyToast.LENGTH_LONG, TastyToast.ERROR);
                     }
                 });
     }

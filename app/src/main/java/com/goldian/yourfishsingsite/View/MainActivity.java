@@ -147,23 +147,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this,LoginActivity.class));
             finish();
         }
-        else if (item.getItemId()==R.id.item_add){
-            startActivity(new Intent(this, TambahBarangActivity.class));
-        }
-        else if (item.getItemId()==R.id.item_list){
+        else if (item.getItemId()==R.id.item_list) {
             Intent intent = new Intent(this, TampilBarangActivity.class);
             intent.putExtra("flag",true);
             startActivity(intent);
         }
-        else if (item.getItemId()==R.id.item_list_rated){
+        else if (item.getItemId()==R.id.item_list_rated) {
             Intent intent = new Intent(this, TampilBarangActivity.class);
             intent.putExtra("flag",false);
             startActivity(intent);
         }
-        else if(item.getItemId()==R.id.event_list){
+        else if(item.getItemId()==R.id.event_list) {
             startActivity(new Intent(this, TampilEventActivity.class));
         }
-        else if(item.getItemId()==R.id.lokasi_list){
+        else if(item.getItemId()==R.id.lokasi_list) {
             startActivity(new Intent(this, TampilLokasiActivity.class));
         }
         return true;

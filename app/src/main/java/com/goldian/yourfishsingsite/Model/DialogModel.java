@@ -21,6 +21,7 @@ public class DialogModel {
     Button btnOk, btnBatal;
     Dialog dialog;
     Context context;
+
     public DialogModel(Context context, int content){
         this.context = context;
         dialog = new Dialog(context);
@@ -38,11 +39,20 @@ public class DialogModel {
         dialog.show();
     }
 
-    public void ratingView(){
-        ratingItem = dialog.findViewById(R.id.ratingItem);
+    public void defaultViewText(){
         txtRating = dialog.findViewById(R.id.txtRating);
         btnOk = dialog.findViewById(R.id.btnOk);
         btnBatal = dialog.findViewById(R.id.btnBatal);
+
+        txtRating.setText("aplikasi akan keluar saat mengubah password \n apa anda yakin ?");
+
+        defaultListener();
+        dialog.show();
+    }
+
+    public void ratingView(){
+        ratingItem = dialog.findViewById(R.id.ratingItem);
+        defaultView();
 
         ratingListener();
         dialog.show();
@@ -59,21 +69,27 @@ public class DialogModel {
         ratingItem.setOnRatingBarChangeListener(onRating);
     }
 
+    private void result(){
+        if (context instanceof DetailBarangActivity) {
+            ((DetailBarangActivity) context).setRating(txtRating.getText().toString());
+        }
+        else if (context instanceof UbahBarangActivity)
+            ((UbahBarangActivity) context).updateImg();
+        else if (context instanceof UbahLokasiActivity)
+            ((UbahLokasiActivity) context).updateImg();
+        else if (context instanceof UbahEventActivity)
+            ((UbahEventActivity) context).updateImg();
+        else if (context instanceof UbahProfileActivity)
+            ((UbahProfileActivity) context).updatePassword();
+//            else if (context instanceof UbahProfileActivity)
+//                ((UbahProfileActivity) context).updateImg();
+    }
+
     //listener
     //---------------
     View.OnClickListener onClick = view -> {
         if (view == btnOk){
-            if (context instanceof DetailBarangActivity) {
-                ((DetailBarangActivity) context).setRating(txtRating.getText().toString());
-            }
-            else if (context instanceof UbahBarangActivity)
-                ((UbahBarangActivity) context).updateImg();
-            else if (context instanceof UbahLokasiActivity)
-                ((UbahLokasiActivity) context).updateImg();
-            else if (context instanceof UbahEventActivity)
-                ((UbahEventActivity) context).updateImg();
-//            else if (context instanceof UbahProfileActivity)
-//                ((UbahProfileActivity) context).updateImg();
+            result();
             dialog.dismiss();
         }
         else if (view == btnBatal){

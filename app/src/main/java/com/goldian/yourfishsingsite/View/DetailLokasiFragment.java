@@ -22,7 +22,7 @@ import com.goldian.yourfishsingsite.R;
 public class DetailLokasiFragment extends Fragment {
 
     ImageView imgLokasi;
-    TextView txtLatitude, txtLongitude, txtNama, txtDeskripsi, txtIkan;
+    TextView txtLatitude, txtLongitude, txtNama, txtDeskripsi, txtIkan, txtAlamat;
     String id_lokasi, key, url, ikan;
     ImageButton btnCommentDown, btnCommentUp;
     LinearLayout frame_container;
@@ -48,6 +48,7 @@ public class DetailLokasiFragment extends Fragment {
         txtLongitude = v.findViewById(R.id.txtLongitude);
         txtNama = v.findViewById(R.id.txtNama);
         txtIkan = v.findViewById(R.id.txtIkan);
+        txtAlamat = v.findViewById(R.id.txtAlamat);
         txtDeskripsi = v.findViewById(R.id.txtDeskripsi);
         btnCommentUp = v.findViewById(R.id.btnCommentUp);
         btnCommentDown = v.findViewById(R.id.btnCommentDown);
@@ -72,6 +73,7 @@ public class DetailLokasiFragment extends Fragment {
                 txtIkan.setText("ikan : " + ikan);
                 txtIkan.setVisibility(View.VISIBLE);
             }
+            txtAlamat.setText("alamat : \n" + bundle.getString("alamat"));
             txtDeskripsi.setText("deskripsi : \n\n" + bundle.getString("deskripsi"));
         }
 

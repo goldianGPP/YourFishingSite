@@ -59,14 +59,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventHolder> {
             intent.putExtra("deskripsi", currentData.getDeskripsi());
             intent.putExtra("link", currentData.getLink());
             intent.putExtra("img", url);
-            intent.putExtra("day", currentData.getDay());
-            intent.putExtra("month", currentData.getMonth());
-            intent.putExtra("year", currentData.getYear());
+            intent.putExtra("tanggal", currentData.getTanggal());
             intent.putExtra("key", currentData.getImg_key());
-            if (context instanceof  TampilEventActivity)
-                ((TampilEventActivity)context).startActivityForResult(intent,1);
-            else
+            if (context instanceof  TampilEventActivity) {
+                intent.putExtra("update", true);
+                ((TampilEventActivity) context).startActivityForResult(intent, 1);
+            }
+            else {
+                intent.putExtra("update", false);
                 context.startActivity(intent);
+            }
         });
     }
 

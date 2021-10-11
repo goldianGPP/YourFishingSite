@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.goldian.yourfishsingsite.Controller.EventController;
 import com.goldian.yourfishsingsite.Model.EventModel;
 import com.goldian.yourfishsingsite.Model.PreferencesModel;
@@ -24,6 +25,7 @@ public class TampilEventActivity extends AppCompatActivity {
     EventAdapter eventAdapter;
     PreferencesModel pref;
     SwipeRefreshLayout swipeRefresh;
+    FloatingActionButton btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class TampilEventActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Tampil Event");
         pref = new PreferencesModel(this,"login");
 
+        btnAdd = findViewById(R.id.btnAdd);
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
@@ -52,6 +55,8 @@ public class TampilEventActivity extends AppCompatActivity {
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(this::request);
+
+        btnAdd.setOnClickListener(view -> startActivityForResult(new Intent(TampilEventActivity.this, TambahEventActivity.class), 1));
     }
 
     private void request(){

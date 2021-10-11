@@ -79,10 +79,12 @@ public class LokasiController {
     //Post
     //-------------------------------------------------------------------------------
     //post lokasi
-    public void postLokasi(RequestBody id_pengguna, RequestBody nama, RequestBody deskripsi, RequestBody status, RequestBody latitude, RequestBody longitude, MultipartBody.Part file){
+    public void postLokasi(RequestBody id_pengguna, RequestBody nama, RequestBody ikan, RequestBody alamat, RequestBody deskripsi, RequestBody status, RequestBody latitude, RequestBody longitude, MultipartBody.Part file){
         api.postLokasi(
                 id_pengguna,
                 nama,
+                ikan,
+                alamat,
                 deskripsi,
                 status,
                 latitude,
